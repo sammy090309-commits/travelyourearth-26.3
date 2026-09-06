@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "ruby",
+  "key": {
+    "A": "travelyourearth:ruby"
+  },
+  "pattern": [
+    "A A",
+    "A A"
+  ],
+  "result": {
+    "id": "travelyourearth:ruby_boots"
+  }
+}

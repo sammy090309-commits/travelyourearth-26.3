@@ -1,0 +1,50 @@
+
+
+# Metadata principal
+license = "${mod_license}"
+# issueTrackerURL = "https://github.com/tu_usuario/tu_repositorio/issues"
+
+# Configuración del Mod
+[[mods]]
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "${mod_name}"
+iconFile = "icon.png"
+bannerFile = "banner.png"
+authors = "Sam_MC123"
+# displayURL = "https://curseforge.com/..."
+
+description ='''
+BRING BACK THE FEATURES FROM MINECRAFT EARTH AND MUCH MORE!!!!!!
+
+Travel Your Earth introduces Ruby to your world! Discover this rare red gemstone underground and craft powerful new gear with unique abilities.
+
+Ruby Features:
+- Add a new ore, RUBY.
+- High-durability Ruby Tools (Sword, Pickaxe, Axe, Shovel, Hoe)
+
+- Ruby Armor Set with special ability: Automatically extinguishes fire when worn!
+
+- Shiny decorative Ruby Blocks for building
+
+(Remember that this is a beta, and all of this content is subject to change.)
+'''
+
+# Mixins
+[[mixins]]
+config = "${mod_id}.mixins.json"
+
+# Dependencias
+[[dependencies.${mod_id}]]
+modId = "neoforge"
+type = "required"
+versionRange = "[${neo_version},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "BOTH"

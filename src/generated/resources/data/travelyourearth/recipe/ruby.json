@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "ruby",
+  "ingredients": [
+    "travelyourearth:ruby_block"
+  ],
+  "result": {
+    "count": 9,
+    "id": "travelyourearth:ruby"
+  }
+}

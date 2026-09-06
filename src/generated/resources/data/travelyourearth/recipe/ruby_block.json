@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "ruby",
+  "key": {
+    "A": "travelyourearth:ruby"
+  },
+  "pattern": [
+    "AAA",
+    "AAA",
+    "AAA"
+  ],
+  "result": {
+    "id": "travelyourearth:ruby_block"
+  }
+}

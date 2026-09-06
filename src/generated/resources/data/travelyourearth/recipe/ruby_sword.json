@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "ruby",
+  "key": {
+    "A": "travelyourearth:ruby",
+    "S": "minecraft:stick"
+  },
+  "pattern": [
+    "A",
+    "A",
+    "S"
+  ],
+  "result": {
+    "id": "travelyourearth:ruby_sword"
+  }
+}

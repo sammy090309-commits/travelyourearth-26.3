@@ -1,0 +1,29 @@
+{
+  "layers": {
+    "horse_body": [
+      {
+        "texture": "travelyourearth:ruby"
+      }
+    ],
+    "humanoid": [
+      {
+        "texture": "travelyourearth:ruby"
+      }
+    ],
+    "humanoid_baby": [
+      {
+        "texture": "travelyourearth:ruby"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "travelyourearth:ruby"
+      }
+    ],
+    "nautilus_body": [
+      {
+        "texture": "travelyourearth:ruby"
+      }
+    ]
+  }
+}

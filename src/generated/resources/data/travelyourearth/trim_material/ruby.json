@@ -1,0 +1,12 @@
+{
+  "asset_name": "ruby",
+  "description": {
+    "color": "#FA1E4E",
+    "translate": "trim_material.travelyourearth.ruby"
+  },
+  "ingredient": "travelyourearth:ruby",
+  "item_model_index": 0.8,
+  "override_armor_materials": {
+    "travelyourearth:ruby": "ruby_darker"
+  }
+}

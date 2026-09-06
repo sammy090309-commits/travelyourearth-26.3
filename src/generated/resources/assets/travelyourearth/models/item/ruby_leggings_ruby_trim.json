@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "travelyourearth:item/ruby_leggings",
+    "layer1": "trims/items/leggings_trim_ruby_darker"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "com.sam_mc.travelyourearth.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": ["BeaconScreenMixin"],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "travelyourearth:block/deepslate_ruby_ore"
+  }
+}
