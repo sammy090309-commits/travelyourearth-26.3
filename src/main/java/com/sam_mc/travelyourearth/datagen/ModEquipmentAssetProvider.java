@@ -2,6 +2,7 @@ package com.sam_mc.travelyourearth.datagen;
 
 import com.sam_mc.travelyourearth.TravelYourEarth;
 import com.sam_mc.travelyourearth.item.ModArmorMaterials;
+import com.sam_mc.travelyourearth.item.ModTrimMaterials;
 import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -29,12 +30,12 @@ public class ModEquipmentAssetProvider implements DataProvider {
                         new EquipmentClientInfo.Layer(Identifier.fromNamespaceAndPath(TravelYourEarth.MODID, "ruby")))
                 .addLayers(EquipmentClientInfo.LayerType.NAUTILUS_BODY,
                         new EquipmentClientInfo.Layer(Identifier.fromNamespaceAndPath(TravelYourEarth.MODID, "ruby")))
-
-
-
-
-            .build());
-
+                // NUEVO (26.3): trim de rubí sobre armadura de rubí -> paleta más oscura al llevarla puesta.
+                // Es lo que vanilla hace con hierro/oro/diamante/netherita/cobre en su EquipmentAssetProvider
+                // (reemplaza al antiguo "override_armor_assets" del trim material, que ya no existe).
+                .replaceTrimPalette(ModTrimMaterials.RUBY,
+                        Identifier.fromNamespaceAndPath(TravelYourEarth.MODID, "trim/ruby_darker"))
+                .build());
     }
 
     @Override

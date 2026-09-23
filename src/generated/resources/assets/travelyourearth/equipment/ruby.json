@@ -25,5 +25,13 @@
         "texture": "travelyourearth:ruby"
       }
     ]
-  }
+  },
+  "trim_overrides": [
+    {
+      "palette": "travelyourearth:trim/ruby_darker",
+      "when": {
+        "material": "travelyourearth:ruby"
+      }
+    }
+  ]
 }

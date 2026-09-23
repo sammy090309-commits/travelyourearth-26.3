@@ -1,5 +1,3 @@
-
-
 # Metadata principal
 license = "${mod_license}"
 issueTrackerURL = "https://github.com/sammy090309-commits/travelyourearth-26.2-V1"
@@ -39,7 +37,10 @@ config = "${mod_id}.mixins.json"
 modId = "neoforge"
 type = "required"
 versionRange = "[${neo_version},)"
-ordering = "NONE"
+# CAMBIO: cargar DESPUÉS de NeoForge para que nuestras definiciones de armaduras
+# vanilla (con el trim de rubí) tengan prioridad sobre las de NeoForge,
+# que en la 26.3 beta no dibujan trims (TODO 26.3 en su TrimmedArmorModel).
+ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
