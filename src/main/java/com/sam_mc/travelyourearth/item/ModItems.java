@@ -1,16 +1,11 @@
 package com.sam_mc.travelyourearth.item;
 
 import com.sam_mc.travelyourearth.TravelYourEarth;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.AxeItem;
-import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraft.resources.ResourceKey;
 
 public class ModItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(TravelYourEarth.MODID);
@@ -23,11 +18,11 @@ public class ModItems {
     public static final DeferredItem<Item> RUBY_PICKAXE = ITEMS.registerItem("ruby_pickaxe",
             properties -> new Item(properties.pickaxe(ModToolTiers.RUBY, 1, -2.8f)));
     public static final DeferredItem<Item> RUBY_SHOVEL = ITEMS.registerItem("ruby_shovel",
-            properties -> new ShovelItem(ModToolTiers.RUBY, 1.5f, -3.0f, properties));
+            properties -> new Item(properties.shovel(ModToolTiers.RUBY, 1.5f, -3.0f)));
     public static final DeferredItem<Item> RUBY_AXE = ITEMS.registerItem("ruby_axe",
-            properties -> new AxeItem(ModToolTiers.RUBY, 6, -3.2f, properties));
+            properties -> new Item(properties.axe(ModToolTiers.RUBY, 6f, -3.2f)));
     public static final DeferredItem<Item> RUBY_HOE = ITEMS.registerItem("ruby_hoe",
-            properties -> new HoeItem(ModToolTiers.RUBY, 0, -3.0f, properties));
+            properties -> new Item(properties.hoe(ModToolTiers.RUBY, 0f, -3.0f)));
     public static final DeferredItem<Item> RUBY_SPEAR = ITEMS.registerItem("ruby_spear",
             properties -> new Item(properties.spear(ModToolTiers.RUBY, 0.95f, 0.7f, 0.7f,
                     3.5f, 13f, 8.5f, 5.1f, 13.37f, 4.67f)));

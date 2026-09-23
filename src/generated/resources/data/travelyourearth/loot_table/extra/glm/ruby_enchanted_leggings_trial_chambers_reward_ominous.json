@@ -1,0 +1,27 @@
+{
+  "pools": [
+    {
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.094
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "modifier": {
+            "type": "minecraft:enchant_with_levels",
+            "levels": {
+              "type": "minecraft:uniform",
+              "max": 30,
+              "min": 15
+            },
+            "options": "#minecraft:on_random_loot"
+          },
+          "name": "travelyourearth:ruby_leggings"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "travelyourearth:extra/glm/ruby_enchanted_leggings_trial_chambers_reward_ominous"
+}

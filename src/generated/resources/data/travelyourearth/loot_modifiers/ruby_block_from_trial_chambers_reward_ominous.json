@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_table",
+  "condition": {
+    "type": "neoforge:loot_table_id",
+    "loot_table_id": "minecraft:chests/trial_chambers/reward_ominous"
+  },
+  "table": "travelyourearth:extra/glm/ruby_block_trial_chambers_reward_ominous"
+}

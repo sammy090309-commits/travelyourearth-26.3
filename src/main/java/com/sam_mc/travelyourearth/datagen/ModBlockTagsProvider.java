@@ -23,19 +23,20 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
         tag(BlockTags.MINEABLE_WITH_PICKAXE)
                 .add(ModBlocks.getRK(ModBlocks.RUBY_BLOCK.get()))
                 .add(ModBlocks.getRK(ModBlocks.RUBY_ORE.get()))
-                .add(ModBlocks.getRK(ModBlocks.DEEPSLATE_RUBY_ORE.get()));
+                .add(ModBlocks.getRK(ModBlocks.DEEPSLATE_RUBY_ORE.get()))
+                .add(ModBlocks.getRK(ModBlocks.HARDENED_GLASS.get()));
+
 
 
         tag(BlockTags.NEEDS_IRON_TOOL)
                 .add(ModBlocks.getRK(ModBlocks.RUBY_BLOCK.get()))
                 .add(ModBlocks.getRK(ModBlocks.RUBY_ORE.get()))
-                .add(ModBlocks.getRK(ModBlocks.DEEPSLATE_RUBY_ORE.get()));
+                .add(ModBlocks.getRK(ModBlocks.DEEPSLATE_RUBY_ORE.get()))
+                .add(ModBlocks.getRK(ModBlocks.HARDENED_GLASS.get()));
 
         tag(BlockTags.BEACON_BASE_BLOCKS)
                 .add(ModBlocks.getRK(ModBlocks.RUBY_BLOCK.get()));
 
-        tag(BlockTags.BEACON_BASE_BLOCKS)
-                .add(ModBlocks.getRK(ModBlocks.RUBY_BLOCK.get()));
 
 
 

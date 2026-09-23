@@ -1,0 +1,32 @@
+{
+  "pools": [
+    {
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.15
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "travelyourearth:ruby_spear"
+        }
+      ],
+      "modifier": [
+        {
+          "type": "minecraft:set_count",
+          "count": 1
+        },
+        {
+          "type": "minecraft:set_damage",
+          "damage": {
+            "type": "minecraft:uniform",
+            "max": 0.9,
+            "min": 0.3
+          }
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "travelyourearth:extra/glm/ruby_spear_pillager_outpost"
+}

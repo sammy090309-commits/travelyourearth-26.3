@@ -11,19 +11,9 @@
       },
       "trigger": "minecraft:inventory_changed"
     },
-    "has_stick": {
-      "conditions": {
-        "items": [
-          {
-            "items": "minecraft:stick"
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "travelyourearth:ruby_hoe"
+        "recipes": "travelyourearth:ruby_hoe"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -31,8 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_ruby",
-      "has_stick"
+      "has_ruby"
     ]
   ],
   "rewards": {

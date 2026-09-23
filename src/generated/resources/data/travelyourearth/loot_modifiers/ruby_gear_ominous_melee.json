@@ -1,0 +1,9 @@
+{
+  "type": "travelyourearth:ruby_trial_gear",
+  "armor_chance": 0.125,
+  "condition": {
+    "type": "neoforge:loot_table_id",
+    "loot_table_id": "minecraft:equipment/trial_chamber_melee"
+  },
+  "weapon_chance": 0.2222
+}

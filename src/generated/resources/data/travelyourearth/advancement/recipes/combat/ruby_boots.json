@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "travelyourearth:ruby_boots"
+        "recipes": "travelyourearth:ruby_boots"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -19,7 +19,7 @@ public class ModArmorMaterials {
     public static final ResourceKey<EquipmentAsset> RUBY_KEY = ResourceKey.create(ROOTID, Identifier.fromNamespaceAndPath(TravelYourEarth.MODID, "ruby"));
 
     public static final ArmorMaterial RUBY_ARMOR_MATERIAL = new ArmorMaterial(1200,
-            makeDefense(2, 6, 8, 2, 18), 18, SoundEvents.ARMOR_EQUIP_DIAMOND,
+            makeDefense(2, 6, 8, 2, 9), 18, SoundEvents.ARMOR_EQUIP_DIAMOND,
             2f, 0f, ModTags.Items.RUBY_REPAIRABLE, RUBY_KEY);
 
     private static Map<ArmorType, Integer> makeDefense(int boots, int legs, int chest, int helm, int body) {

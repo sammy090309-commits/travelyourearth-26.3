@@ -1,0 +1,26 @@
+{
+  "pools": [
+    {
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.75
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "travelyourearth:ruby"
+        }
+      ],
+      "modifier": {
+        "type": "minecraft:set_count",
+        "count": {
+          "type": "minecraft:uniform",
+          "max": 5,
+          "min": 2
+        }
+      },
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "travelyourearth:extra/glm/ruby_buried_treasure"
+}

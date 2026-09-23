@@ -2,6 +2,7 @@ package com.sam_mc.travelyourearth;
 
 import com.sam_mc.travelyourearth.block.ModBlocks;
 import com.sam_mc.travelyourearth.item.ModItems;
+import com.sam_mc.travelyourearth.loot.ModLootModifiers;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -37,6 +38,7 @@ public class TravelYourEarth {
 
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
+        ModLootModifiers.register(modEventBus);
 
         NeoForge.EVENT_BUS.register(this);
 
@@ -185,7 +187,13 @@ public class TravelYourEarth {
                     CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS
             );
         }
-
+        if (event.getTabKey() == CreativeModeTabs.COLORED_BLOCKS) {
+            event.insertAfter(
+                    new ItemStack(Items.TINTED_GLASS),
+                    new ItemStack(ModBlocks.HARDENED_GLASS.get()), // O ModItems.RUBY_BLOCK.get() según donde registres tu BlockItem
+                    CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS
+            );
+        }
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call

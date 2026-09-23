@@ -1,0 +1,37 @@
+{
+  "pools": [
+    {
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.132
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "modifier": [
+            {
+              "type": "minecraft:set_damage",
+              "damage": {
+                "type": "minecraft:uniform",
+                "max": 0.95,
+                "min": 0.15
+              }
+            },
+            {
+              "type": "minecraft:enchant_with_levels",
+              "levels": {
+                "type": "minecraft:uniform",
+                "max": 30,
+                "min": 15
+              },
+              "options": "#minecraft:on_random_loot"
+            }
+          ],
+          "name": "travelyourearth:ruby_shovel"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "travelyourearth:extra/glm/ruby_enchanted_shovel_bastion_hoglin_stable"
+}

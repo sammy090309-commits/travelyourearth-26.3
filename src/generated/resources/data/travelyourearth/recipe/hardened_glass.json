@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "tempered_glass",
+  "key": {
+    "G": "minecraft:glass",
+    "R": "travelyourearth:ruby"
+  },
+  "pattern": [
+    " G ",
+    "GRG",
+    " G "
+  ],
+  "result": {
+    "count": 2,
+    "id": "travelyourearth:hardened_glass"
+  }
+}

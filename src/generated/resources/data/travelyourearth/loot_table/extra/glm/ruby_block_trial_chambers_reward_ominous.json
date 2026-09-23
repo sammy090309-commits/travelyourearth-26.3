@@ -1,0 +1,22 @@
+{
+  "pools": [
+    {
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.029
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "travelyourearth:ruby_block"
+        }
+      ],
+      "modifier": {
+        "type": "minecraft:set_count",
+        "count": 1
+      },
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "travelyourearth:extra/glm/ruby_block_trial_chambers_reward_ominous"
+}

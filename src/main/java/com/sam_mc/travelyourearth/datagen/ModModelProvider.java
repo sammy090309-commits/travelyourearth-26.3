@@ -2,13 +2,14 @@ package com.sam_mc.travelyourearth.datagen;
 
 import com.sam_mc.travelyourearth.TravelYourEarth;
 import com.sam_mc.travelyourearth.block.ModBlocks;
-import com.sam_mc.travelyourearth.item.ModArmorMaterials;
 import com.sam_mc.travelyourearth.item.ModItems;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.data.PackOutput;
+
+import java.util.Map;
 
 public class ModModelProvider extends ModelProvider {
     public ModModelProvider(PackOutput output){
@@ -25,10 +26,14 @@ public class ModModelProvider extends ModelProvider {
         itemModels.generateFlatItem(ModItems.RUBY_HOE.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
         itemModels.generateSpear(ModItems.RUBY_SPEAR.get());
 
-        itemModels.generateTrimmableItem(ModItems.RUBY_HELMET.get(), ModArmorMaterials.RUBY_KEY, ItemModelGenerators.TRIM_PREFIX_HELMET, false);
-        itemModels.generateTrimmableItem(ModItems.RUBY_CHESTPLATE.get(), ModArmorMaterials.RUBY_KEY, ItemModelGenerators.TRIM_PREFIX_CHESTPLATE, false);
-        itemModels.generateTrimmableItem(ModItems.RUBY_LEGGINGS.get(), ModArmorMaterials.RUBY_KEY, ItemModelGenerators.TRIM_PREFIX_LEGGINGS, false);
-        itemModels.generateTrimmableItem(ModItems.RUBY_BOOTS.get(), ModArmorMaterials.RUBY_KEY, ItemModelGenerators.TRIM_PREFIX_BOOTS, false);
+        itemModels.generateTrimmableArmorSet(
+                ModItems.RUBY_HELMET.get(),
+                ModItems.RUBY_CHESTPLATE.get(),
+                ModItems.RUBY_LEGGINGS.get(),
+                ModItems.RUBY_BOOTS.get(),
+                false,
+                Map.of()
+        );
 
 
 
@@ -41,6 +46,8 @@ public class ModModelProvider extends ModelProvider {
         blockModels.createTrivialCube(ModBlocks.RUBY_BLOCK.get());
         blockModels.createTrivialCube(ModBlocks.RUBY_ORE.get());
         blockModels.createTrivialCube(ModBlocks.DEEPSLATE_RUBY_ORE.get());
+        blockModels.createTrivialCube(ModBlocks.HARDENED_GLASS.get());
+
 
     }
 }

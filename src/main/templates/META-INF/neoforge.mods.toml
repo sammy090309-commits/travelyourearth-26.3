@@ -2,7 +2,7 @@
 
 # Metadata principal
 license = "${mod_license}"
-# issueTrackerURL = "https://github.com/tu_usuario/tu_repositorio/issues"
+issueTrackerURL = "https://github.com/sammy090309-commits/travelyourearth-26.2-V1"
 
 # Configuración del Mod
 [[mods]]
@@ -12,7 +12,7 @@ displayName = "${mod_name}"
 iconFile = "icon.png"
 bannerFile = "banner.png"
 authors = "Sam_MC123"
-# displayURL = "https://curseforge.com/..."
+displayURL = "https://www.curseforge.com/minecraft/mc-mods/travel-your-earth"
 
 description ='''
 BRING BACK THE FEATURES FROM MINECRAFT EARTH AND MUCH MORE!!!!!!

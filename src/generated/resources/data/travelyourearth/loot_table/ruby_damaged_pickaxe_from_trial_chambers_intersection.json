@@ -1,0 +1,26 @@
+{
+  "pools": [
+    {
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.132
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "modifier": {
+            "type": "minecraft:set_damage",
+            "damage": {
+              "type": "minecraft:uniform",
+              "max": 0.8,
+              "min": 0.2
+            }
+          },
+          "name": "travelyourearth:ruby_pickaxe"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "travelyourearth:ruby_damaged_pickaxe_from_trial_chambers_intersection"
+}

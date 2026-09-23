@@ -9,6 +9,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DropExperienceBlock;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.TransparentBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -32,6 +33,14 @@ public class ModBlocks {
             properties -> new DropExperienceBlock(UniformInt.of(3, 5), properties.strength(4f)
                     .requiresCorrectToolForDrops().sound(SoundType.DEEPSLATE)));
 
+    public static final DeferredBlock<Block> HARDENED_GLASS = registerBlock("hardened_glass",
+            properties -> new TransparentBlock(properties.strength(2.5F, 3600000.0F)
+                    .requiresCorrectToolForDrops()
+                    .sound(SoundType.GLASS)
+                    .noOcclusion()
+                    .isValidSpawn((state, level, pos, entityType) -> false)
+                    .isRedstoneConductor((state, level, pos) -> false)
+                    .isSuffocating((state, level, pos) -> false)));
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Function<BlockBehaviour.Properties, T> function){
         DeferredBlock<T> toReturn = BLOCKS.registerBlock(name, function);
@@ -53,4 +62,5 @@ public class ModBlocks {
     public static ResourceKey<Block> getRK(Block block) {
         return BuiltInRegistries.BLOCK.getResourceKey(block).get();
     }
+
 }

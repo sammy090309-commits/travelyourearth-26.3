@@ -1,0 +1,27 @@
+{
+  "pools": [
+    {
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.153
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "modifier": {
+            "type": "minecraft:enchant_with_levels",
+            "levels": {
+              "type": "minecraft:uniform",
+              "max": 30,
+              "min": 15
+            },
+            "options": "#minecraft:on_random_loot"
+          },
+          "name": "travelyourearth:ruby_sword"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "travelyourearth:extra/glm/ruby_sword_enchanted_end_city"
+}

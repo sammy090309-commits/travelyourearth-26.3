@@ -26,5 +26,8 @@ public class ModTags {
         private static TagKey<Item> createTag(String name) {
             return ItemTags.create(Identifier.fromNamespaceAndPath(TravelYourEarth.MODID, name));
         };
+
+
+
     }
 }
