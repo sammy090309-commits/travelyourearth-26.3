@@ -80,7 +80,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .group("ruby")
                 .save(output, TravelYourEarth.MODID + ":ruby_from_ruby_block");
 
-        shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.HARDENED_GLASS.get(), 2)
+        shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.HARDENED_GLASS.get(), 6)
                 .pattern(" G ")
                 .pattern("GRG")
                 .pattern(" G ")
@@ -122,8 +122,9 @@ public class ModRecipeProvider extends RecipeProvider {
                 ModBlocks.DEEPSLATE_RUBY_ORE.get()
         );
 
-        oreSmelting(rubySmeltables, RecipeCategory.MISC, CookingBookCategory.MISC, ModItems.RUBY.get(), 0.25f, 200, "ruby");
-        oreBlasting(rubySmeltables, RecipeCategory.MISC, CookingBookCategory.MISC, ModItems.RUBY.get(), 0.25f, 100, "ruby");
+        // Igual que el diamante en 26.3: 200 ticks en horno y en alto horno
+        oreSmelting(rubySmeltables, RecipeCategory.MISC, CookingBookCategory.MISC, ModItems.RUBY.get(), 0.85f, 200, "ruby");
+        oreBlasting(rubySmeltables, RecipeCategory.MISC, CookingBookCategory.MISC, ModItems.RUBY.get(), 0.85f, 200, "ruby");
     }
 
     // =====================================================================

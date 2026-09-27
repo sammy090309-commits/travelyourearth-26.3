@@ -21,6 +21,17 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
 
         dropSelf(ModBlocks.HARDENED_GLASS.get());
 
+        // NUEVO: el bloque terráqueo se suelta a sí mismo (como el concreto).
+        // Como tiene requiresCorrectToolForDrops, solo cae si lo rompes con pico.
+        dropSelf(ModBlocks.EARTH_BLOCK.get());
+
+        // NUEVO: tierra Earth -> se suelta a sí misma
+        dropSelf(ModBlocks.EARTH_DIRT.get());
+
+        // NUEVO: césped Earth -> suelta tierra Earth; con toque de seda, el césped (como vanilla)
+        this.add(ModBlocks.EARTH_GRASS.get(),
+                block -> createSingleItemTableWithSilkTouch(block, ModBlocks.EARTH_DIRT.get()));
+
         this.add(ModBlocks.RUBY_ORE.get(),
                 block -> createOreDrop(ModBlocks.RUBY_ORE.get(), ModItems.RUBY.get()));
 

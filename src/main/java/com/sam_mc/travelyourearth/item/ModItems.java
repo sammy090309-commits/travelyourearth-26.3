@@ -13,19 +13,24 @@ public class ModItems {
     public static final DeferredItem<Item> RUBY = ITEMS.registerItem("ruby",
             properties -> new Item(properties.trimMaterial(ModTrimMaterials.RUBY)));
 
+    // Espada, pico y pala: mismos parámetros que vanilla (la diferencia la pone ModToolTiers)
     public static final DeferredItem<Item> RUBY_SWORD = ITEMS.registerItem("ruby_sword",
             properties -> new Item(properties.sword(ModToolTiers.RUBY, 3, -2.4f)));
     public static final DeferredItem<Item> RUBY_PICKAXE = ITEMS.registerItem("ruby_pickaxe",
             properties -> new Item(properties.pickaxe(ModToolTiers.RUBY, 1, -2.8f)));
     public static final DeferredItem<Item> RUBY_SHOVEL = ITEMS.registerItem("ruby_shovel",
             properties -> new Item(properties.shovel(ModToolTiers.RUBY, 1.5f, -3.0f)));
+    // Entre hierro (6, -3.1) y diamante (5, -3.0)
     public static final DeferredItem<Item> RUBY_AXE = ITEMS.registerItem("ruby_axe",
-            properties -> new Item(properties.axe(ModToolTiers.RUBY, 6f, -3.2f)));
+            properties -> new Item(properties.axe(ModToolTiers.RUBY, 5.5f, -3.05f)));
+    // Entre hierro (-2, -1) y diamante (-3, 0)
     public static final DeferredItem<Item> RUBY_HOE = ITEMS.registerItem("ruby_hoe",
-            properties -> new Item(properties.hoe(ModToolTiers.RUBY, 0f, -3.0f)));
+            properties -> new Item(properties.hoe(ModToolTiers.RUBY, -2.5f, -0.5f)));
+    // Entre la lanza de hierro y la de diamante.
+    // knockbackThreshold (5.1) y damageThreshold (4.6) son fijos en vanilla.
     public static final DeferredItem<Item> RUBY_SPEAR = ITEMS.registerItem("ruby_spear",
-            properties -> new Item(properties.spear(ModToolTiers.RUBY, 0.95f, 0.7f, 0.7f,
-                    3.5f, 13f, 8.5f, 5.1f, 13.37f, 4.67f)));
+            properties -> new Item(properties.spear(ModToolTiers.RUBY, 1.0f, 1.01f, 0.55f,
+                    2.75f, 10.5f, 6.63f, 5.1f, 10.63f, 4.6f)));
 
 
 
@@ -47,4 +52,3 @@ public class ModItems {
         ITEMS.register(eventBus);
     }
 }
-

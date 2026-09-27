@@ -1,8 +1,11 @@
 package com.sam_mc.travelyourearth;
 
 import com.sam_mc.travelyourearth.block.ModBlocks;
+import com.sam_mc.travelyourearth.condition.ModConditions;
+import com.sam_mc.travelyourearth.item.ModCreativeModTabs;
 import com.sam_mc.travelyourearth.item.ModItems;
 import com.sam_mc.travelyourearth.loot.ModLootModifiers;
+import com.sam_mc.travelyourearth.sound.ModSounds;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -38,15 +41,20 @@ public class TravelYourEarth {
 
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
+        ModCreativeModTabs.register(modEventBus);   // pestaña "Travel Your Earth"
         ModLootModifiers.register(modEventBus);
+        ModSounds.register(modEventBus);            // sonidos del mod
+        ModConditions.register(modEventBus);        // NUEVO: condiciones de datos
 
         NeoForge.EVENT_BUS.register(this);
 
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
 
-        // Register our mod's ModConfigSpec so that FML can create and load the config file for us
-        //  modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        // Config del cliente (config/travelyourearth-client.toml)
+        modContainer.registerConfig(ModConfig.Type.CLIENT, Config.SPEC);
+        // NUEVO: config común (config/travelyourearth-common.toml)
+        modContainer.registerConfig(ModConfig.Type.COMMON, Config.COMMON_SPEC);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

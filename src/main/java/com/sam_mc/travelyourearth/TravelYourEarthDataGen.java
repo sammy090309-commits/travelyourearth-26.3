@@ -8,6 +8,7 @@ import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -42,7 +43,7 @@ public class TravelYourEarthDataGen {
         event.createWorldRegistryObjects(worldBuilder, Set.of(TravelYourEarth.MODID));
 
         // =====================================================================
-        // REGISTROS RELOADABLES: loot tables, y recetas+advancements juntos.
+        // REGISTROS RELOADABLES: loot tables, recetas y logros.
         //
         // CONFIRMADO (fuente decompilada de RegistrySetBuilder): existe una
         // sobrecarga .add(MultiRegistryBootstrap) que NO lleva ResourceKey,
@@ -60,7 +61,8 @@ public class TravelYourEarthDataGen {
                                 )
                         )
                 )
-                .add(ModRecipeProvider.create());
+                .add(ModRecipeProvider.create())
+                .add(Registries.ADVANCEMENT, new AdvancementProvider(List.of(ModAdvancementProvider::new))); // NUEVO: logros
         event.createReloadableRegistryObjects(reloadableBuilder, Set.of(TravelYourEarth.MODID));
 
         // =====================================================================
@@ -79,6 +81,7 @@ public class TravelYourEarthDataGen {
         generator.addProvider(true, new ModEquipmentAssetProvider(packOutput));
         generator.addProvider(true, new ModGlobalLootModifierProvider(packOutput, lookupProvider));
         generator.addProvider(true, new ModSpriteSourceProvider(packOutput, lookupProvider));
+        generator.addProvider(true, new ModSoundDefinitionsProvider(packOutput)); // sounds.json
 
     }
 }

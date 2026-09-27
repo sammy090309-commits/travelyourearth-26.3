@@ -1,7 +1,7 @@
 {
   "type": "minecraft:smelting",
   "cookingtime": 200,
-  "experience": 0.25,
+  "experience": 0.85,
   "group": "ruby",
   "ingredient": "travelyourearth:ruby_ore",
   "result": {

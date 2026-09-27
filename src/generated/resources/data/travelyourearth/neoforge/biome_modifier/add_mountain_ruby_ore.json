@@ -7,8 +7,10 @@
     "minecraft:snowy_slopes",
     "minecraft:grove",
     "minecraft:meadow",
+    "minecraft:cherry_grove",
     "minecraft:windswept_hills",
-    "minecraft:windswept_gravelly_hills"
+    "minecraft:windswept_gravelly_hills",
+    "minecraft:windswept_forest"
   ],
   "features": "travelyourearth:mountain_ruby_ore_placed",
   "step": "underground_ores"

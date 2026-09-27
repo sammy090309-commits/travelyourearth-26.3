@@ -16,5 +16,22 @@
   "item.travelyourearth.ruby_horse_armor": "Ruby Horse Armor",
   "item.travelyourearth.ruby_nautilus_armor": "Ruby Nautilus Armor",
   "trim_material.travelyourearth.ruby": "Ruby Material",
-  "block.travelyourearth.hardened_glass": "Hardened Glass"
+  "block.travelyourearth.hardened_glass": "Hardened Glass",
+  "gui.travelyourearth.beacon_payments": "Payments",
+  "gui.travelyourearth.beacon_payments.search": "Search...",
+  "itemGroup.travelyourearth": "Travel Your Earth",
+  "travelyourearth.configuration.title": "Travel Your Earth Configuration",
+  "travelyourearth.configuration.showCreativeTab": "Show Mod Tab",
+  "travelyourearth.configuration.showCreativeTab.tooltip": "Shows the \"Travel Your Earth\" Mod Tab with every item from the mod. The items still appear in the vanilla tabs too. If you change it with a world open, leave and join again to see it.",
+  "advancements.travelyourearth.obtain_ruby.title": "You're Back?",
+  "advancements.travelyourearth.obtain_ruby.description": "Get a Ruby, just like the old days",
+  "advancements.travelyourearth.fireproof.title": "Fireproof",
+  "advancements.travelyourearth.fireproof.description": "Let your Ruby Armor put out the flames",
+  "travelyourearth.configuration.modAdvancementTab": "Mod Advancement Tab",
+  "travelyourearth.configuration.modAdvancementTab.tooltip": "Moves the mod's advancements from the \"Adventure\" tab to their own Mod Tab. The tab appears after getting your first Ruby. If you change it with a world open, leave and join again.",
+  "block.travelyourearth.earth_block": "Earth Block",
+  "block.travelyourearth.earth_dirt": "Earth Dirt",
+  "block.travelyourearth.earth_grass": "Earth Grass Block",
+  "advancements.travelyourearth.root.title": "Travel Your Earth",
+  "advancements.travelyourearth.root.description": "The whole planet in your hands"
 }

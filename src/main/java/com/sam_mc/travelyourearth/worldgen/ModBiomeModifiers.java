@@ -14,22 +14,23 @@ import net.neoforged.neoforge.common.world.BiomeModifiers;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 public class ModBiomeModifiers {
-
+    // En qué biomas aparece cada capa de rubí
     public static final ResourceKey<BiomeModifier> ADD_RUBY_ORE = registerKey("add_ruby_ore");
     public static final ResourceKey<BiomeModifier> ADD_MOUNTAIN_RUBY_ORE = registerKey("add_mountain_ruby_ore");
+    public static final ResourceKey<BiomeModifier> ADD_DAPPLED_RUBY_ORE = registerKey("add_dappled_ruby_ore");
 
     public static void bootstrap(BootstrapContext<BiomeModifier> context) {
         var placedFeatures = context.lookup(Registries.PLACED_FEATURE);
         var biomes = context.lookup(Registries.BIOME);
 
-        // 1. Generación normal (Si usas un Tag personalizado como OVERWORLD_WITHOUT_MOUNTAINS, cámbialo aquí)
+        // 1. TODOS LOS BIOMAS del Overworld
         context.register(ADD_RUBY_ORE, new BiomeModifiers.AddFeaturesBiomeModifier(
                 biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                 HolderSet.direct(placedFeatures.getOrThrow(ModPlacedFeatures.RUBY_ORE_PLACED_KEY)),
                 GenerationStep.Decoration.UNDERGROUND_ORES
         ));
 
-        // 2. Generación exclusiva para Montañas y Colinas (Vetas de tamaño 8)
+        // 2. MONTAÑAS: los mismos 10 biomas donde vanilla 26.3 pone esmeralda extra
         context.register(ADD_MOUNTAIN_RUBY_ORE, new BiomeModifiers.AddFeaturesBiomeModifier(
                 HolderSet.direct(
                         biomes.getOrThrow(Biomes.JAGGED_PEAKS),
@@ -38,10 +39,19 @@ public class ModBiomeModifiers {
                         biomes.getOrThrow(Biomes.SNOWY_SLOPES),
                         biomes.getOrThrow(Biomes.GROVE),
                         biomes.getOrThrow(Biomes.MEADOW),
+                        biomes.getOrThrow(Biomes.CHERRY_GROVE),
                         biomes.getOrThrow(Biomes.WINDSWEPT_HILLS),
-                        biomes.getOrThrow(Biomes.WINDSWEPT_GRAVELLY_HILLS)
+                        biomes.getOrThrow(Biomes.WINDSWEPT_GRAVELLY_HILLS),
+                        biomes.getOrThrow(Biomes.WINDSWEPT_FOREST)
                 ),
                 HolderSet.direct(placedFeatures.getOrThrow(ModPlacedFeatures.MOUNTAIN_RUBY_ORE_PLACED_KEY)),
+                GenerationStep.Decoration.UNDERGROUND_ORES
+        ));
+
+        // 3. DAPPLED FOREST (bioma nuevo de la 26.x)
+        context.register(ADD_DAPPLED_RUBY_ORE, new BiomeModifiers.AddFeaturesBiomeModifier(
+                HolderSet.direct(biomes.getOrThrow(Biomes.DAPPLED_FOREST)),
+                HolderSet.direct(placedFeatures.getOrThrow(ModPlacedFeatures.DAPPLED_RUBY_ORE_PLACED_KEY)),
                 GenerationStep.Decoration.UNDERGROUND_ORES
         ));
     }

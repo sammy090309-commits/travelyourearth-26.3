@@ -11,6 +11,8 @@ import net.minecraft.client.data.models.model.ItemModelUtils;
 import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.client.data.models.model.TexturedModel;
 import net.minecraft.client.color.item.Dye;
 import net.minecraft.client.renderer.item.SelectItemModel;
 import net.minecraft.client.renderer.item.properties.select.TrimMaterialProperty;
@@ -21,6 +23,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.equipment.trim.TrimMaterial;
+import net.minecraft.world.level.block.Block;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +72,44 @@ public class ModModelProvider extends ModelProvider {
         blockModels.createTrivialCube(ModBlocks.RUBY_ORE.get());
         blockModels.createTrivialCube(ModBlocks.DEEPSLATE_RUBY_ORE.get());
         blockModels.createTrivialCube(ModBlocks.HARDENED_GLASS.get());
+
+        // Bloque terráqueo: un cubo con una textura distinta en cada cara (como un planeta).
+        // createTrivialBlock = lo mismo que createTrivialCube, pero con NUESTRAS texturas.
+        // El modelo del ítem (el cubo 3D del inventario / Mod Tab) se genera solo.
+        blockModels.createTrivialBlock(ModBlocks.EARTH_BLOCK.get(),
+                TexturedModel.createDefault(ModModelProvider::earthBlockTextures, ModelTemplates.CUBE));
+
+        // Tierra Earth: como la tierra vanilla, con ROTACIÓN ALEATORIA (4 giros) para que el suelo
+        // no se vea repetido. Textura: textures/block/earth_dirt.png
+        blockModels.createRotatedVariantBlock(ModBlocks.EARTH_DIRT.get());
+
+        // Césped Earth: arriba earth_grass_top, lados earth_grass_side, abajo la tierra Earth.
+        // Sin tinte de bioma: las texturas ya vienen pintadas de verde.
+        blockModels.createTrivialBlock(ModBlocks.EARTH_GRASS.get(),
+                TexturedModel.createDefault(ModModelProvider::earthGrassTextures, ModelTemplates.CUBE_BOTTOM_TOP));
+    }
+
+    /** Césped Earth: textures/block/earth_grass_top.png, earth_grass_side.png y earth_dirt.png */
+    private static TextureMapping earthGrassTextures(Block block) {
+        return new TextureMapping()
+                .put(TextureSlot.TOP, TextureMapping.getBlockTexture(block, "_top"))
+                .put(TextureSlot.SIDE, TextureMapping.getBlockTexture(block, "_side"))
+                .put(TextureSlot.BOTTOM, TextureMapping.getBlockTexture(ModBlocks.EARTH_DIRT.get()));
+    }
+
+    /**
+     * Texturas del bloque terráqueo: textures/block/earth_block_<cara>.png
+     * En el inventario se ven: arriba (up), izquierda (north) y derecha (west).
+     */
+    private static TextureMapping earthBlockTextures(Block block) {
+        return new TextureMapping()
+                .put(TextureSlot.PARTICLE, TextureMapping.getBlockTexture(block, "_north")) // partículas al romperlo
+                .put(TextureSlot.UP, TextureMapping.getBlockTexture(block, "_up"))
+                .put(TextureSlot.DOWN, TextureMapping.getBlockTexture(block, "_down"))
+                .put(TextureSlot.NORTH, TextureMapping.getBlockTexture(block, "_north"))
+                .put(TextureSlot.SOUTH, TextureMapping.getBlockTexture(block, "_south"))
+                .put(TextureSlot.EAST, TextureMapping.getBlockTexture(block, "_east"))
+                .put(TextureSlot.WEST, TextureMapping.getBlockTexture(block, "_west"));
     }
 
     /**

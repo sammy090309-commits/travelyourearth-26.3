@@ -34,7 +34,7 @@ public class ModTrimMaterialProvider implements DataProvider {
 
         JsonObject description = new JsonObject();
         description.addProperty("translate", "trim_material.travelyourearth.ruby");
-        description.addProperty("color", "#FA1E4E");
+        description.addProperty("color", "#D9253B");
         json.add("description", description);
 
         return DataProvider.saveStable(cachedOutput, json, path);

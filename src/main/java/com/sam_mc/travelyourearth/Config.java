@@ -1,42 +1,42 @@
 package com.sam_mc.travelyourearth;
 
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.Item;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-// An example config class. This is not required, but it's a good idea to have one to keep your config organized.
-// Demonstrates how to use Neo's config APIs
+/**
+ * Configuración del mod.
+ *
+ * CLIENT -> config/travelyourearth-client.toml  (solo afecta a tu pantalla)
+ * COMMON -> config/travelyourearth-common.toml  (datos del juego: la usa el servidor,
+ *                                                también el "servidor" interno de un mundo de un jugador)
+ */
 public class Config {
-    private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
-    public static final ModConfigSpec.BooleanValue LOG_DIRT_BLOCK = BUILDER
-            .comment("Whether to log the dirt block on common setup")
-            .define("logDirtBlock", true);
+    // =========================================================================
+    // CLIENT
+    // =========================================================================
+    private static final ModConfigSpec.Builder CLIENT_BUILDER = new ModConfigSpec.Builder();
 
-    public static final ModConfigSpec.IntValue MAGIC_NUMBER = BUILDER
-            .comment("A magic number")
-            .defineInRange("magicNumber", 42, 0, Integer.MAX_VALUE);
+    public static final ModConfigSpec.BooleanValue SHOW_CREATIVE_TAB = CLIENT_BUILDER
+            .comment("Shows the \"Travel Your Earth\" Mod Tab with every item from the mod.",
+                    "The items still appear in the vanilla tabs too.",
+                    "If you change it with a world open, leave and join again to see it.")
+            .translation("travelyourearth.configuration.showCreativeTab")
+            .define("showCreativeTab", true);
 
-    public static final ModConfigSpec.ConfigValue<String> MAGIC_NUMBER_INTRODUCTION = BUILDER
-            .comment("What you want the introduction message to be for the magic number")
-            .define("magicNumberIntroduction", "The magic number is... ");
+    /** Config del cliente (se llama SPEC para no romper el código que ya lo usa). */
+    public static final ModConfigSpec SPEC = CLIENT_BUILDER.build();
 
-    // a list of strings that are treated as resource locations for items
-    public static final ModConfigSpec.ConfigValue<List<? extends String>> ITEM_STRINGS = BUILDER
-            .comment("A list of items to log on common setup.")
-            .defineListAllowEmpty("items", List.of("minecraft:iron_ingot"), () -> "", Config::validateItemName);
+    // =========================================================================
+    // COMMON
+    // =========================================================================
+    private static final ModConfigSpec.Builder COMMON_BUILDER = new ModConfigSpec.Builder();
 
-    static final ModConfigSpec SPEC = BUILDER.build();
+    public static final ModConfigSpec.BooleanValue MOD_ADVANCEMENT_TAB = COMMON_BUILDER
+            .comment("Moves the mod's advancements from the vanilla \"Adventure\" tab to their own Mod Tab.",
+                    "The tab appears after getting your first Ruby.",
+                    "If you change it with a world open, leave and join again (or use /reload).")
+            .translation("travelyourearth.configuration.modAdvancementTab")
+            .define("modAdvancementTab", false);
 
-    private static boolean validateItemName(final Object obj) {
-        return obj instanceof String itemName && BuiltInRegistries.ITEM.containsKey(Identifier.parse(itemName));
-    }
+    public static final ModConfigSpec COMMON_SPEC = COMMON_BUILDER.build();
 }
