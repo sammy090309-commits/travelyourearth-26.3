@@ -1,0 +1,32 @@
+{
+  "pools": [
+    {
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.1604
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "modifier": [
+            {
+              "type": "minecraft:set_damage",
+              "damage": {
+                "type": "minecraft:uniform",
+                "max": 1.0,
+                "min": 0.8
+              }
+            },
+            {
+              "type": "minecraft:enchant_randomly",
+              "options": "#minecraft:on_random_loot"
+            }
+          ],
+          "name": "travelyourearth:ruby_chestplate"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "travelyourearth:extra/chests/bastion/treasure_chestplate_damaged_enchanted"
+}

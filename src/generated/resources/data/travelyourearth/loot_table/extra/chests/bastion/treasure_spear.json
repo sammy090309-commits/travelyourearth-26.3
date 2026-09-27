@@ -1,0 +1,18 @@
+{
+  "pools": [
+    {
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.1604
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "travelyourearth:ruby_spear"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "travelyourearth:extra/chests/bastion/treasure_spear"
+}

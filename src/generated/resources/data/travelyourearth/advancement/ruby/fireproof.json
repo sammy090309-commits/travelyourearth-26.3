@@ -1,0 +1,31 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "travelyourearth:advancement_tab",
+      "enabled": true
+    }
+  ],
+  "parent": "travelyourearth:ruby/obtain_ruby",
+  "criteria": {
+    "ruby_armor_extinguished": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.travelyourearth.fireproof.description"
+    },
+    "icon": {
+      "id": "travelyourearth:ruby_chestplate"
+    },
+    "title": {
+      "translate": "advancements.travelyourearth.fireproof.title"
+    }
+  },
+  "requirements": [
+    [
+      "ruby_armor_extinguished"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

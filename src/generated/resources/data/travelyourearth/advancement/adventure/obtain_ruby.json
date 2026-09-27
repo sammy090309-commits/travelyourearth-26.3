@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "travelyourearth:advancement_tab",
+      "enabled": false
+    }
+  ],
+  "parent": "minecraft:adventure/root",
+  "criteria": {
+    "has_ruby": {
+      "conditions": {
+        "items": [
+          {
+            "items": "travelyourearth:ruby"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.travelyourearth.obtain_ruby.description"
+    },
+    "icon": {
+      "id": "travelyourearth:ruby"
+    },
+    "title": {
+      "translate": "advancements.travelyourearth.obtain_ruby.title"
+    }
+  },
+  "requirements": [
+    [
+      "has_ruby"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

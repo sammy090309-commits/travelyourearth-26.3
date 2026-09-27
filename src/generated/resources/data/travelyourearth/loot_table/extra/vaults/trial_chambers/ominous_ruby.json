@@ -1,0 +1,26 @@
+{
+  "pools": [
+    {
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.2639
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "max": 3,
+              "min": 2
+            }
+          },
+          "name": "travelyourearth:ruby"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "travelyourearth:extra/vaults/trial_chambers/ominous_ruby"
+}

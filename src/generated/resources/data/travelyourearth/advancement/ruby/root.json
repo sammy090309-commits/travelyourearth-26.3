@@ -1,0 +1,40 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "travelyourearth:advancement_tab",
+      "enabled": true
+    }
+  ],
+  "criteria": {
+    "has_ruby": {
+      "conditions": {
+        "items": [
+          {
+            "items": "travelyourearth:ruby"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "travelyourearth:block/earth_dirt",
+    "description": {
+      "translate": "advancements.travelyourearth.root.description"
+    },
+    "icon": {
+      "id": "travelyourearth:earth_block"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "advancements.travelyourearth.root.title"
+    }
+  },
+  "requirements": [
+    [
+      "has_ruby"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

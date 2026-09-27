@@ -1,0 +1,26 @@
+{
+  "pools": [
+    {
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.1422
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "modifier": {
+            "type": "minecraft:set_damage",
+            "damage": {
+              "type": "minecraft:uniform",
+              "max": 0.5,
+              "min": 0.1
+            }
+          },
+          "name": "travelyourearth:ruby_axe"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "travelyourearth:extra/chests/trial_chambers/intersection_axe_damaged"
+}

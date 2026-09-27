@@ -1,0 +1,18 @@
+{
+  "pools": [
+    {
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.0745
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "travelyourearth:ruby_horse_armor"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "travelyourearth:extra/chests/end_city/horse_armor"
+}

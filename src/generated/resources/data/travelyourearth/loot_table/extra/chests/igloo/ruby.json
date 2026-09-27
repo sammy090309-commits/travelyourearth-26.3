@@ -1,0 +1,18 @@
+{
+  "pools": [
+    {
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.0213
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "travelyourearth:ruby"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "travelyourearth:extra/chests/igloo/ruby"
+}

@@ -1,0 +1,8 @@
+{
+  "block.note_block.ruby": {
+    "sounds": [
+      "travelyourearth:note/ruby"
+    ],
+    "subtitle": "subtitles.block.note_block.note"
+  }
+}

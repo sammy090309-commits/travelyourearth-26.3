@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "travelyourearth:block/earth_block_down",
+    "east": "travelyourearth:block/earth_block_east",
+    "north": "travelyourearth:block/earth_block_north",
+    "particle": "travelyourearth:block/earth_block_north",
+    "south": "travelyourearth:block/earth_block_south",
+    "up": "travelyourearth:block/earth_block_up",
+    "west": "travelyourearth:block/earth_block_west"
+  }
+}

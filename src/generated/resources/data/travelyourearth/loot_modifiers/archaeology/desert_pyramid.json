@@ -1,0 +1,9 @@
+{
+  "type": "travelyourearth:replace_with_item",
+  "chance": 0.125,
+  "condition": {
+    "type": "neoforge:loot_table_id",
+    "loot_table_id": "minecraft:archaeology/desert_pyramid"
+  },
+  "item": "travelyourearth:ruby"
+}

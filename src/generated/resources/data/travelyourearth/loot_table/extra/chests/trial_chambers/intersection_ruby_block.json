@@ -1,0 +1,18 @@
+{
+  "pools": [
+    {
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.023
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "travelyourearth:ruby_block"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "travelyourearth:extra/chests/trial_chambers/intersection_ruby_block"
+}

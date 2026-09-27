@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "travelyourearth:block/earth_dirt"
+      },
+      {
+        "model": "travelyourearth:block/earth_dirt",
+        "y": 90
+      },
+      {
+        "model": "travelyourearth:block/earth_dirt",
+        "y": 180
+      },
+      {
+        "model": "travelyourearth:block/earth_dirt",
+        "y": 270
+      }
+    ]
+  }
+}
