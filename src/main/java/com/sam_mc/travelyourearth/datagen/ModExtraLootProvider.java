@@ -40,6 +40,9 @@ import java.util.Set;
  *   - Mansión y puesto de saqueadores: valores propios del mod (no hay diamante equivalente).
  *   - Aldeas: sin rubí.
  *
+ * RAREZA: todas las probabilidades de abajo son las "base" (iguales a vanilla) y al generar
+ * se multiplican por RARITY_MULTIPLIER. Para hacer el rubí más raro o más común, cambia SOLO ese número.
+ *
  * Cada key se declara junto a la tabla vanilla a la que se engancha (chest / vault / pot).
  * ModGlobalLootModifierProvider recorre TARGETS y crea los modificadores solo,
  * así que para añadir loot nuevo basta con: 1) declarar la key aquí y 2) su tabla en run().
@@ -326,6 +329,20 @@ public class ModExtraLootProvider implements LootTableSubProvider {
 
 
     // =========================================================================
+    // RAREZA GLOBAL
+    // =========================================================================
+
+    /**
+     * Multiplica TODAS las probabilidades de este archivo (cofres, vaults y jarrones).
+     *   1.0  = igual que el diamante/esmeralda de vanilla
+     *   0.75 = 25% menos probable (un poco más raro)   <- actual
+     *   0.5  = la mitad de probable
+     * Las cantidades (count), el daño y los encantamientos NO cambian.
+     * Es público para usar el mismo valor en la arqueología (ModGlobalLootModifierProvider).
+     */
+    public static final float RARITY_MULTIPLIER = 0.75f;
+
+    // =========================================================================
     // GENERACIÓN
     // =========================================================================
 
@@ -359,7 +376,8 @@ public class ModExtraLootProvider implements LootTableSubProvider {
         ItemLike nautilusArmor = ModItems.RUBY_NAUTILUS_ARMOR.get();
 
         // Lectura rápida de cada línea:
-        //   add(KEY, probabilidad_por_cofre, ítem, [count / damage / enchant...])
+        //   add(KEY, probabilidad_BASE_por_cofre, ítem, [count / damage / enchant...])
+        //   (la probabilidad real = base × RARITY_MULTIPLIER; los % de los comentarios son la base)
         //   damage(min, max) = durabilidad RESTANTE (1.0 = nueva)
 
         // =====================================================================
@@ -371,7 +389,7 @@ public class ModExtraLootProvider implements LootTableSubProvider {
         add(DESERT_PYRAMID_HORSE_ARMOR,    0.0894f, horseArmor);  // 8.9%
 
         // --- Templo de la jungla ---
-        add(JUNGLE_TEMPLE_RUBY,            0.091f, ruby, count(1, 4));  // 98.1%  ⚠️ ¿seguro? esto es 98.1%, quizás querías 0.0981f
+        add(JUNGLE_TEMPLE_RUBY,            0.091f, ruby, count(1, 4));  // 9.1%
         add(JUNGLE_TEMPLE_HORSE_ARMOR,     0.0731f, horseArmor);  // 7.3%
 
         // --- Mazmorra ---
@@ -524,7 +542,7 @@ public class ModExtraLootProvider implements LootTableSubProvider {
     // =========================================================================
 
     /**
-     * 1 pool, 1 tirada, con "chance" de dar el ítem, aplicándole las funciones en orden.
+     * 1 pool, 1 tirada, con "chance × RARITY_MULTIPLIER" de dar el ítem, aplicándole las funciones en orden.
      * Ej: add(KEY, 0.15f, sword, damage(0.8f, 1.0f), enchantRandomly());
      */
     private void add(ResourceKey<LootTable> key, float chance, ItemLike item, LootItemFunction.Builder... functions) {
@@ -542,7 +560,7 @@ public class ModExtraLootProvider implements LootTableSubProvider {
         this.output.accept(key, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .setRolls(ContextIntProviders.exactly(1))
-                        .when(LootItemRandomChanceCondition.randomChance(chance))
+                        .when(LootItemRandomChanceCondition.randomChance(chance * RARITY_MULTIPLIER))
                         .add(entry)));
     }
 

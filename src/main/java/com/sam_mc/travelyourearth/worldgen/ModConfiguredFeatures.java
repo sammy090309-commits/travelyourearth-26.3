@@ -31,15 +31,15 @@ public class ModConfiguredFeatures {
                 new BlockReplacement(deepslateReplaceables, ModBlocks.DEEPSLATE_RUBY_ORE.get().defaultBlockState())
         );
 
-        // 1. TODOS LOS BIOMAS: size 4 → normalmente 0 a 4 menas por veta (promedio ≈ 2).
-        // 50% de descarte si la veta toca aire (cuevas), igual que el diamante.
+        // 1. TODOS LOS BIOMAS: igual que la veta principal del diamante (size 4 → 1 a 5 menas,
+        //    promedio ≈ 2) y 50% de descarte si toca aire (cuevas).
         context.register(RUBY_ORE_KEY, new OreFeature(rubyTargets, 5, 0.5f));
 
-        // 2. MONTAÑAS: size 4 → vetas pequeñas y repartidas, estilo esmeralda (promedio ≈ 2).
-        context.register(MOUNTAIN_RUBY_ORE_KEY, new OreFeature(rubyTargets, 4));
+        // 2. MONTAÑAS: mismas vetas que el diamante (size 4, 50% de descarte con aire).
+        context.register(MOUNTAIN_RUBY_ORE_KEY, new OreFeature(rubyTargets, 8, 0.5f));
 
-        // 3. DAPPLED FOREST: size 8 → normalmente 4 a 8 menas por veta (promedio ≈ 5.7).
-        context.register(DAPPLED_RUBY_ORE_KEY, new OreFeature(rubyTargets, 8));
+        // 3. BOSQUE MOTEADO: size 8 → normalmente 4 a 8 menas por veta (promedio ≈ 5.7).
+        context.register(DAPPLED_RUBY_ORE_KEY, new OreFeature(rubyTargets, 3));
     }
 
     public static ResourceKey<Feature> registerKey(String name) {
