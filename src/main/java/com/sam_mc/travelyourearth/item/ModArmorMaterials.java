@@ -2,11 +2,11 @@ package com.sam_mc.travelyourearth.item;
 
 import com.google.common.collect.Maps;
 import com.sam_mc.travelyourearth.TravelYourEarth;
+import com.sam_mc.travelyourearth.sound.ModSounds;
 import com.sam_mc.travelyourearth.tags.ModTags;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.equipment.EquipmentAsset;
@@ -19,7 +19,7 @@ public class ModArmorMaterials {
     public static final ResourceKey<EquipmentAsset> RUBY_KEY = ResourceKey.create(ROOTID, Identifier.fromNamespaceAndPath(TravelYourEarth.MODID, "ruby"));
 
     public static final ArmorMaterial RUBY_ARMOR_MATERIAL = new ArmorMaterial(24,
-            makeDefense(2, 6, 7, 3, 8), 18, SoundEvents.ARMOR_EQUIP_DIAMOND,
+            makeDefense(2, 6, 7, 3, 8), 18, ModSounds.ARMOR_EQUIP_RUBY,
             1f, 0f, ModTags.Items.RUBY_REPAIRABLE, RUBY_KEY);
 
     private static Map<ArmorType, Integer> makeDefense(int boots, int legs, int chest, int helm, int body) {
@@ -27,6 +27,4 @@ public class ModArmorMaterials {
                 Map.of(ArmorType.BOOTS, boots, ArmorType.LEGGINGS, legs, ArmorType.CHESTPLATE, chest, ArmorType.HELMET, helm, ArmorType.BODY, body)
         );
     }
-
-
 }

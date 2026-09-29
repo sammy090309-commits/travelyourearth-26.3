@@ -17,6 +17,10 @@ public class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> NOTE_BLOCK_RUBY =
             SOUND_EVENTS.register("block.note_block.ruby", SoundEvent::createVariableRangeEvent);
 
+    /** Sonido al equiparse una pieza de armadura de rubí (4 variantes). */
+    public static final DeferredHolder<SoundEvent, SoundEvent> ARMOR_EQUIP_RUBY =
+            SOUND_EVENTS.register("item.armor.equip_ruby", SoundEvent::createVariableRangeEvent);
+
     public static void register(IEventBus eventBus) {
         SOUND_EVENTS.register(eventBus);
     }

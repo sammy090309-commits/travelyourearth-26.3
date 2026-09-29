@@ -4,5 +4,14 @@
       "travelyourearth:note/ruby"
     ],
     "subtitle": "subtitles.block.note_block.note"
+  },
+  "item.armor.equip_ruby": {
+    "sounds": [
+      "travelyourearth:item/armor/equip_ruby1",
+      "travelyourearth:item/armor/equip_ruby2",
+      "travelyourearth:item/armor/equip_ruby3",
+      "travelyourearth:item/armor/equip_ruby4"
+    ],
+    "subtitle": "subtitles.travelyourearth.item.armor.equip_ruby"
   }
 }

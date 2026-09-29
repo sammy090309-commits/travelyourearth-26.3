@@ -34,5 +34,6 @@
   "block.travelyourearth.earth_dirt": "Earth Dirt",
   "block.travelyourearth.earth_grass": "Earth Grass Block",
   "advancements.travelyourearth.root.title": "Travel Your Earth",
-  "advancements.travelyourearth.root.description": "The whole planet in your hands"
+  "advancements.travelyourearth.root.description": "The whole planet in your hands",
+  "subtitles.travelyourearth.item.armor.equip_ruby": "Ruby armor clinks"
 }
