@@ -23,10 +23,10 @@ public class ModSoundDefinitionsProvider extends SoundDefinitionsProvider {
         add(ModSounds.ARMOR_EQUIP_RUBY, SoundDefinition.definition()
                 .subtitle("subtitles.travelyourearth.item.armor.equip_ruby")
                 .with(
-                        sound(modSound("item/armor/equip_ruby1")),
-                        sound(modSound("item/armor/equip_ruby2")),
-                        sound(modSound("item/armor/equip_ruby3")),
-                        sound(modSound("item/armor/equip_ruby4"))
+                        sound(modSound("item/armor/equip_ruby1")).volume(0.30),
+                        sound(modSound("item/armor/equip_ruby2")).volume(0.30),
+                        sound(modSound("item/armor/equip_ruby3")).volume(0.30),
+                        sound(modSound("item/armor/equip_ruby4")).volume(0.30)
                 ));
     }
 

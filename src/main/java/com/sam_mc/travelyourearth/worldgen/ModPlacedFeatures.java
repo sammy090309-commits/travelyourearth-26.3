@@ -57,7 +57,7 @@ public class ModPlacedFeatures {
         // 20 intentos (≈ 1/3 caen bajo tierra) → ≈ 36 menas + ≈ 4 de la general ≈ 40 menas/chunk.
         register(context, DAPPLED_RUBY_ORE_PLACED_KEY,
                 configuredFeatures.getOrThrow(ModConfiguredFeatures.DAPPLED_RUBY_ORE_KEY),
-                OrePlacements.commonOrePlacement(20,
+                OrePlacements.commonOrePlacement(25,
                         HeightRangePlacement.uniform(
                                 VerticalAnchor.absolute(12),
                                 VerticalAnchor.absolute(256))));
