@@ -35,5 +35,9 @@
   "block.travelyourearth.earth_grass": "Earth Grass Block",
   "advancements.travelyourearth.root.title": "Travel Your Earth",
   "advancements.travelyourearth.root.description": "The whole planet in your hands",
-  "subtitles.travelyourearth.item.armor.equip_ruby": "Ruby armor clinks"
+  "subtitles.travelyourearth.item.armor.equip_ruby": "Ruby armor clinks",
+  "neoforge.configuration.uitext.client": "Client Options",
+  "neoforge.configuration.uitext.type.client": "Client Settings",
+  "neoforge.configuration.uitext.local": "Local Options",
+  "neoforge.configuration.uitext.type.local": "Local Settings"
 }

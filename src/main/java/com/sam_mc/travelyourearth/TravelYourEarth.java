@@ -53,8 +53,8 @@ public class TravelYourEarth {
 
         // Config del cliente (config/travelyourearth-client.toml)
         modContainer.registerConfig(ModConfig.Type.CLIENT, Config.SPEC);
-        // NUEVO: config común (config/travelyourearth-common.toml)
-        modContainer.registerConfig(ModConfig.Type.COMMON, Config.COMMON_SPEC);
+        // Config local (antes COMMON; renombrado a LOCAL en NeoForge 26.3.0.37-beta)
+        modContainer.registerConfig(ModConfig.Type.LOCAL, Config.COMMON_SPEC);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
