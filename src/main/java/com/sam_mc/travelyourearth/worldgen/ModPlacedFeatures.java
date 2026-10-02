@@ -53,11 +53,11 @@ public class ModPlacedFeatures {
                                 VerticalAnchor.absolute(60))));
 
         // 3. DAPPLED FOREST: added on top of the "all biomes" layer.
-        // 25 attempts per chunk, uniform from Y 12 to Y 256 (same chance at any height;
+        // 30 attempts per chunk, uniform from Y 12 to Y 256 (same chance at any height;
         // attempts that land in the air don't place anything).
         register(context, DAPPLED_RUBY_ORE_PLACED_KEY,
                 configuredFeatures.getOrThrow(ModConfiguredFeatures.DAPPLED_RUBY_ORE_KEY),
-                OrePlacements.commonOrePlacement(25,
+                OrePlacements.commonOrePlacement(30,
                         HeightRangePlacement.uniform(
                                 VerticalAnchor.absolute(12),
                                 VerticalAnchor.absolute(256))));
