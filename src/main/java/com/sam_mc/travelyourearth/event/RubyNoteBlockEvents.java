@@ -13,9 +13,9 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.NoteBlockEvent;
 
 /**
- * Bloque musical + bloque de rubí debajo = guitarra eléctrica.
- * El enum de instrumentos vanilla no se puede extender en NeoForge 26.3, así que
- * cancelamos la nota vanilla y tocamos la nuestra con la misma afinación y partícula.
+ * Note block + ruby block below = electric guitar.
+ * The vanilla instrument enum can't be extended in NeoForge 26.3, so we cancel
+ * the vanilla note and play ours with the same pitch and particle.
  */
 @EventBusSubscriber(modid = TravelYourEarth.MODID)
 public class RubyNoteBlockEvents {
@@ -24,7 +24,7 @@ public class RubyNoteBlockEvents {
     public static void onNoteBlockPlay(NoteBlockEvent.Play event) {
         if (!(event.getLevel() instanceof ServerLevel level)) return;
 
-        // Si hay una cabeza de mob encima, suena la cabeza (como en vanilla)
+        // If there's a mob head on top, the head plays (like in vanilla)
         if (!event.getInstrument().isTunable()) return;
 
         BlockPos pos = event.getPos();
@@ -37,7 +37,7 @@ public class RubyNoteBlockEvents {
 
         level.playSound(null, pos, ModSounds.NOTE_BLOCK_RUBY.get(), SoundSource.RECORDS, 3.0F, pitch);
 
-        // Partícula de nota con su color (count = 0 -> el primer valor es el color)
+        // Note particle with its color (count = 0 -> the first value is the color)
         level.sendParticles(ParticleTypes.NOTE,
                 pos.getX() + 0.5, pos.getY() + 1.2, pos.getZ() + 0.5,
                 0, note / 24.0, 0.0, 0.0, 1.0);

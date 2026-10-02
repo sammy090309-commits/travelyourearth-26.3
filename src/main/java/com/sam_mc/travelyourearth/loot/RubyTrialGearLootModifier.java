@@ -25,6 +25,12 @@ import net.neoforged.neoforge.common.loot.LootModifier;
 
 import java.util.Optional;
 
+/**
+ * Ruby gear for ominous trial chamber mobs (equipment/trial_chamber_* tables).
+ *   1. Armor: with armor_chance, the whole vanilla set becomes ruby (enchantments kept, copper + flow trim).
+ *   2. Melee weapon: with weapon_chance, the vanilla sword becomes a ruby axe or spear (enchantments kept).
+ * Added in ModGlobalLootModifierProvider.
+ */
 public class RubyTrialGearLootModifier extends LootModifier {
 
     public static final MapCodec<RubyTrialGearLootModifier> CODEC = RecordCodecBuilder.mapCodec(inst ->
@@ -37,9 +43,8 @@ public class RubyTrialGearLootModifier extends LootModifier {
     private final float armorChance;
     private final float weaponChance;
 
-    // ANTES (26.2): public RubyTrialGearLootModifier(LootItemCondition[] conditions, int priority, ...)
-    // AHORA (26.3): mismo cambio que en LootModifier / ReplaceWithItemLootModifier -
-    // una sola condicion opcional envuelta en Holder, en vez de un array.
+    // 26.3: same change as in LootModifier / ReplaceWithItemLootModifier -
+    // a single optional condition wrapped in a Holder, instead of an array.
     public RubyTrialGearLootModifier(Optional<Holder<LootItemCondition>> condition, int priority,
                                      float armorChance, float weaponChance) {
         super(condition, priority);
@@ -52,11 +57,15 @@ public class RubyTrialGearLootModifier extends LootModifier {
         return CODEC;
     }
 
+    // =========================================================================
+    // Logic
+    // =========================================================================
+
     @Override
     protected ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> loot, LootContext context) {
         RandomSource random = context.getRandom();
 
-        // 1) ARMADURA: si vanilla generó piezas, con cierta prob. todo el set pasa a rubí
+        // 1) ARMOR: if vanilla generated pieces, with some chance the whole set becomes ruby
         boolean hasArmor = false;
         for (ItemStack stack : loot) {
             if (armorSlotOf(stack) != null) {
@@ -75,7 +84,7 @@ public class RubyTrialGearLootModifier extends LootModifier {
             }
         }
 
-        // 2) ARMA MELEE: la espada vanilla pasa a hacha o lanza de rubí, heredando sus encantamientos
+        // 2) MELEE WEAPON: the vanilla sword becomes a ruby axe or spear, keeping its enchantments
         if (weaponChance > 0.0F && random.nextFloat() < weaponChance) {
             for (int i = 0; i < loot.size(); i++) {
                 ItemStack original = loot.get(i);
@@ -97,16 +106,20 @@ public class RubyTrialGearLootModifier extends LootModifier {
         return loot;
     }
 
+    // =========================================================================
+    // Helpers
+    // =========================================================================
+
     private static ItemStack toRubyArmor(ItemStack original, EquipmentSlot slot, RegistryAccess registries) {
         ItemStack ruby = new ItemStack(rubyArmorFor(slot));
 
-        // Encantamientos del trial ominoso (Protection IV, Fire Protection IV, Projectile Protection IV)
+        // Ominous trial enchantments (Protection IV, Fire Protection IV, Projectile Protection IV)
         var enchantments = original.get(DataComponents.ENCHANTMENTS);
         if (enchantments != null && !enchantments.isEmpty()) {
             ruby.set(DataComponents.ENCHANTMENTS, enchantments);
         }
 
-        // Armor trim: flow + cobre, como la de diamante
+        // Armor trim: flow + copper, like the diamond one
         var materials = registries.lookupOrThrow(Registries.TRIM_MATERIAL);
         var patterns = registries.lookupOrThrow(Registries.TRIM_PATTERN);
         ruby.set(DataComponents.TRIM, new ArmorTrim(
@@ -116,7 +129,7 @@ public class RubyTrialGearLootModifier extends LootModifier {
         return ruby;
     }
 
-    // Slot de armadura si el ítem es una pieza real (excluye calabazas, cabezas, etc.)
+    // Armor slot if the item is a real armor piece (excludes pumpkins, heads, etc.)
     private static EquipmentSlot armorSlotOf(ItemStack stack) {
         if (stack.isEmpty() || !stack.isDamageableItem()) return null;
         var equippable = stack.get(DataComponents.EQUIPPABLE);
@@ -133,7 +146,7 @@ public class RubyTrialGearLootModifier extends LootModifier {
             case CHEST -> ModItems.RUBY_CHESTPLATE.get();
             case LEGS -> ModItems.RUBY_LEGGINGS.get();
             case FEET -> ModItems.RUBY_BOOTS.get();
-            default -> throw new IllegalArgumentException("No es un slot de armadura: " + slot);
+            default -> throw new IllegalArgumentException("Not an armor slot: " + slot);
         };
     }
 }

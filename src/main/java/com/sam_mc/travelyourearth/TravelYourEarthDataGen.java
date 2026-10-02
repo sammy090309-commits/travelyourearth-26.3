@@ -19,22 +19,19 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import java.util.List;
 import java.util.Set;
 
+/** Runs every data generator of the mod (runData). */
 @EventBusSubscriber(modid = TravelYourEarth.MODID)
 public class TravelYourEarthDataGen {
+
     @SubscribeEvent
     public static void gatherClientData(GatherDataEvent.Client event) {
         DataGenerator generator = event.getGenerator();
         PackOutput packOutput = generator.getPackOutput();
 
         // =====================================================================
-        // REGISTROS "WORLD" (NO reloadables): features, placed features, biome modifiers.
-        // ANTES: esto (junto con las loot tables) se mandaba con
-        // event.createDatapackRegistryObjects(...), método que ya NO existe.
-        // AHORA: se separa segun si el registro es reloadable o no.
-        //
-        // VERIFICAR: Registries.FEATURE sigue siendo mi mejor inferencia para lo que
-        // antes era Registries.CONFIGURED_FEATURE (ver comentario detallado en
-        // ModDatapackProvider.java). Confirmalo con Ctrl+Espacio si sigue en rojo.
+        // 1. "WORLD" REGISTRIES (not reloadable): features, placed features, biome modifiers.
+        // 26.3: event.createDatapackRegistryObjects(...) no longer exists; registries are
+        // split depending on whether they're reloadable or not.
         // =====================================================================
         RegistrySetBuilder worldBuilder = new RegistrySetBuilder()
                 .add(Registries.FEATURE, ModConfiguredFeatures::bootstrap)
@@ -43,12 +40,10 @@ public class TravelYourEarthDataGen {
         event.createWorldRegistryObjects(worldBuilder, Set.of(TravelYourEarth.MODID));
 
         // =====================================================================
-        // REGISTROS RELOADABLES: loot tables, recetas y logros.
-        //
-        // CONFIRMADO (fuente decompilada de RegistrySetBuilder): existe una
-        // sobrecarga .add(MultiRegistryBootstrap) que NO lleva ResourceKey,
-        // porque el propio MultiRegistryBootstrap ya declara sus registros
-        // via requestedRegistries(). Por eso aqui NO se pasa Registries.RECIPE.
+        // 2. RELOADABLE REGISTRIES: loot tables, recipes and advancements.
+        // .add(MultiRegistryBootstrap) doesn't take a ResourceKey, because the
+        // MultiRegistryBootstrap already declares its registries in requestedRegistries().
+        // That's why Registries.RECIPE isn't passed here.
         // =====================================================================
         RegistrySetBuilder reloadableBuilder = new RegistrySetBuilder()
                 .add(
@@ -62,15 +57,14 @@ public class TravelYourEarthDataGen {
                         )
                 )
                 .add(ModRecipeProvider.create())
-                .add(Registries.ADVANCEMENT, new AdvancementProvider(List.of(ModAdvancementProvider::new))); // NUEVO: logros
+                .add(Registries.ADVANCEMENT, new AdvancementProvider(List.of(ModAdvancementProvider::new)));
         event.createReloadableRegistryObjects(reloadableBuilder, Set.of(TravelYourEarth.MODID));
 
         // =====================================================================
-        // Providers "normales" (no van por RegistrySetBuilder).
-        // ANTES: event.getLookupProvider() -> YA NO EXISTE.
-        // AHORA: event.getWorldLookupProvider() o event.getReloadableLookupProvider().
-        // Uso el "reloadable" porque es el mas completo (incluye todo lo del world layer
-        // mas lo reloadable), que es lo que normalmente necesitan tags y loot modifiers.
+        // 3. "Normal" providers (they don't go through RegistrySetBuilder).
+        // 26.3: event.getLookupProvider() no longer exists -> getWorldLookupProvider()
+        // or getReloadableLookupProvider(). We use the reloadable one because it's the most
+        // complete (world layer + reloadable), which is what tags and loot modifiers need.
         // =====================================================================
         var lookupProvider = event.getReloadableLookupProvider();
 
@@ -81,6 +75,5 @@ public class TravelYourEarthDataGen {
         generator.addProvider(true, new ModEquipmentAssetProvider(packOutput));
         generator.addProvider(true, new ModGlobalLootModifierProvider(packOutput, lookupProvider));
         generator.addProvider(true, new ModSoundDefinitionsProvider(packOutput)); // sounds.json
-
     }
 }

@@ -15,6 +15,10 @@ import net.neoforged.neoforge.common.loot.LootModifier;
 
 import java.util.Optional;
 
+/**
+ * Loot modifier that, with "chance", REPLACES all the generated loot with 1 "item".
+ * Used for archaeology (suspicious sand / gravel), where each block gives a single item.
+ */
 public class ReplaceWithItemLootModifier extends LootModifier {
 
     public static final MapCodec<ReplaceWithItemLootModifier> CODEC =
@@ -26,10 +30,8 @@ public class ReplaceWithItemLootModifier extends LootModifier {
     private final Item item;
     private final float chance;
 
-    // ANTES (26.2): public ReplaceWithItemLootModifier(LootItemCondition[] conditions, int priority, Item item, float chance)
-    // AHORA (26.3): LootModifier ya no recibe un array de condiciones, recibe
-    // una sola condicion opcional envuelta en Holder (Optional<Holder<LootItemCondition>>).
-    // Verificado contra el codigo fuente actual de LootModifier en NeoForge 26.3.
+    // 26.3: LootModifier no longer receives an array of conditions, it receives
+    // a single optional condition wrapped in a Holder (Optional<Holder<LootItemCondition>>).
     public ReplaceWithItemLootModifier(Optional<Holder<LootItemCondition>> condition, int priority, Item item, float chance) {
         super(condition, priority);
         this.item = item;

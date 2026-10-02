@@ -7,13 +7,13 @@ import com.sam_mc.travelyourearth.Config;
 import net.neoforged.neoforge.common.conditions.ICondition;
 
 /**
- * Condición de datos: "¿la opción modAdvancementTab está en este valor?".
+ * Data condition: "is the modAdvancementTab option set to this value?".
  *
- * En los JSON de los logros se ve así:
+ * In the advancement JSON files it looks like this:
  *   "neoforge:conditions": [ { "type": "travelyourearth:advancement_tab", "enabled": true } ]
  *
- * NeoForge la revisa al cargar el mundo (o con /reload): si da false, ese logro
- * simplemente NO se carga. Así elegimos qué versión de cada logro existe.
+ * NeoForge checks it when the world loads (or with /reload): if it returns false, that
+ * advancement is simply NOT loaded. This is how we choose which version of each advancement exists.
  */
 public record ModAdvancementTabCondition(boolean enabled) implements ICondition {
 
@@ -23,7 +23,7 @@ public record ModAdvancementTabCondition(boolean enabled) implements ICondition 
 
     @Override
     public boolean test(ICondition.IContext context) {
-        // Si por algo la config aún no cargó, usamos el valor por defecto (false = pestaña Aventura)
+        // If for some reason the config isn't loaded yet, use the default value (false = Adventure tab)
         boolean modTab = Config.COMMON_SPEC.isLoaded()
                 ? Config.MOD_ADVANCEMENT_TAB.get()
                 : Config.MOD_ADVANCEMENT_TAB.getDefault();

@@ -17,21 +17,25 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
 /**
- * Logros del mod. Se generan DOS versiones de cada uno, con condiciones,
- * y la opción "modAdvancementTab" (config COMMON) decide cuál se carga:
+ * Mod advancements. TWO versions of each one are generated, with conditions,
+ * and the "modAdvancementTab" option (LOCAL config) decides which one is loaded:
  *
- *   OFF (por defecto)                      ON
- *   Aventura                               Travel Your Earth   <- pestaña propia (raíz, icono: bloque terráqueo)
- *    └ ¿Volviste?                           └ ¿Volviste?
- *       └ A prueba de fuego                    └ A prueba de fuego
+ *   OFF (default)                          ON
+ *   Adventure                              Travel Your Earth   <- own tab (root, icon: earth block)
+ *    └ You're Back?                         └ You're Back?
+ *       └ Fireproof                            └ Fireproof
  *
  *   IDs:  travelyourearth:adventure/...    travelyourearth:ruby/...
  */
 public class ModAdvancementProvider extends AdvancementSubProvider {
 
+    // =========================================================================
+    // Constants
+    // =========================================================================
+
     /**
-     * Fondo de la pestaña propia: tierra Earth (textures/block/earth_dirt.png).
-     * AdvancementTabMixin lo reconoce y le pone césped Earth arriba y cielo encima.
+     * Background of the own tab: Earth dirt (textures/block/earth_dirt.png).
+     * AdvancementTabMixin recognizes it and puts Earth grass on the top row.
      */
     private static final Identifier MOD_TAB_BACKGROUND =
             Identifier.fromNamespaceAndPath(TravelYourEarth.MODID, "block/earth_dirt");
@@ -47,9 +51,9 @@ public class ModAdvancementProvider extends AdvancementSubProvider {
     public void generate() {
 
         // =====================================================================
-        // VERSIÓN 1: en la pestaña vanilla "Aventura"  (opción OFF)
+        // VERSION 1: in the vanilla "Adventure" tab  (option OFF)
         // =====================================================================
-        // Referencia al logro vanilla "Aventura". No crea ningún archivo, solo sirve de "padre".
+        // Reference to the vanilla "Adventure" advancement. It doesn't create any file, it's only used as a parent.
         AdvancementHolder adventureRoot = Advancement.Builder.advancement()
                 .build(Identifier.withDefaultNamespace("adventure/root"));
 
@@ -60,9 +64,9 @@ public class ModAdvancementProvider extends AdvancementSubProvider {
                         Component.translatable("advancements.travelyourearth.obtain_ruby.title"),
                         Component.translatable("advancements.travelyourearth.obtain_ruby.description"),
                         AdvancementType.TASK,
-                        true,   // cartelito arriba a la derecha
-                        true,   // anunciarlo en el chat
-                        false)  // no oculto
+                        true,   // toast in the top right corner
+                        true,   // announce in chat
+                        false)  // not hidden
                 .save(output, Identifier.fromNamespaceAndPath(TravelYourEarth.MODID, "adventure/obtain_ruby"), VANILLA_TAB);
 
         fireproof()
@@ -70,20 +74,20 @@ public class ModAdvancementProvider extends AdvancementSubProvider {
                 .save(output, RubyArmorFireHandler.FIREPROOF_ADVANCEMENT, VANILLA_TAB);
 
         // =====================================================================
-        // VERSIÓN 2: pestaña propia del mod  (opción ON)
+        // VERSION 2: the mod's own tab  (option ON)
         // =====================================================================
-        // RAÍZ "Travel Your Earth": da nombre, icono (bloque terráqueo) y fondo a la pestaña.
-        // Se consigue a la vez que "¿Volviste?" (al tener un rubí), pero en SILENCIO
-        // (sin cartel ni chat), igual que las raíces vanilla. Así la pestaña aparece con tu primer rubí.
+        // ROOT "Travel Your Earth": gives the tab its name, icon (earth block) and background.
+        // It's earned at the same time as "You're Back?" (when you get a ruby), but SILENTLY
+        // (no toast or chat), like vanilla roots. This way the tab appears with your first ruby.
         AdvancementHolder modTabRoot = obtainRuby()
                 .rootDisplay(
-                        ModBlocks.EARTH_BLOCK.get().asItem(), // el icono tiene que ser un ÍTEM
+                        ModBlocks.EARTH_BLOCK.get().asItem(), // the icon must be an ITEM
                         Component.translatable("advancements.travelyourearth.root.title"),
                         Component.translatable("advancements.travelyourearth.root.description"),
-                        MOD_TAB_BACKGROUND, // rootDisplay + fondo = raíz de una pestaña nueva
+                        MOD_TAB_BACKGROUND, // rootDisplay + background = root of a new tab
                         AdvancementType.TASK,
-                        false,  // sin cartelito
-                        false,  // sin mensaje en el chat
+                        false,  // no toast
+                        false,  // no chat message
                         false)
                 .save(output, Identifier.fromNamespaceAndPath(TravelYourEarth.MODID, "ruby/root"), MOD_TAB);
 
@@ -105,18 +109,18 @@ public class ModAdvancementProvider extends AdvancementSubProvider {
     }
 
     // =========================================================================
-    // Partes que comparten las dos versiones
+    // Parts shared by both versions
     // =========================================================================
 
-    /** ¿VOLVISTE? — guiño a Minecraft Earth, donde el rubí era la moneda. */
+    /** YOU'RE BACK? — a nod to Minecraft Earth, where the ruby was the currency. */
     private static Advancement.Builder obtainRuby() {
         return Advancement.Builder.advancement()
                 .addCriterion("has_ruby", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.RUBY.get()));
     }
 
     /**
-     * A PRUEBA DE FUEGO — criterio "impossible": no se cumple solo.
-     * Lo da RubyArmorFireHandler cuando la armadura de rubí le apaga el fuego al jugador.
+     * FIREPROOF — "impossible" criterion: it's never completed on its own.
+     * RubyArmorFireHandler grants it when the ruby armor puts out the player's fire.
      */
     private static Advancement.Builder fireproof() {
         return Advancement.Builder.advancement()

@@ -5,8 +5,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 /**
- * Deja leer y cambiar "leftPos" (posición X del GUI) y leer "topPos" (posición Y) de cualquier pantalla con inventario.
- * Lo usamos para correr el faro a la derecha al abrir el panel, como hace el libro de recetas.
+ * Lets us read and change "leftPos" (X position of the GUI) and read "topPos" (Y position) of any inventory screen.
+ * We use it to move the beacon to the right when the panel opens, like the recipe book does.
  */
 @Mixin(AbstractContainerScreen.class)
 public interface AbstractContainerScreenAccessorMixin {

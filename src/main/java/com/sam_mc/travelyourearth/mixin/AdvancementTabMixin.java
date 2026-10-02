@@ -14,20 +14,20 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 /**
- * Fondo "Earth" para la pestaña de logros del mod.
+ * "Earth" background for the mod's advancement tab.
  *
- * Vanilla (AdvancementTab#extractContents) repite UNA sola textura de 16x16 en todo el fondo.
- * Aquí interceptamos cada cuadro y, SOLO si el fondo de la pestaña es la tierra Earth:
+ * Vanilla (AdvancementTab#extractContents) repeats ONE single 16x16 texture over the whole background.
+ * Here we intercept each tile and, ONLY if the tab background is Earth dirt:
  *
- *   primera fila -> césped Earth  (earth_grass_side)
- *   el resto     -> tierra Earth  (earth_dirt, la textura normal del fondo)
+ *   first row -> Earth grass  (earth_grass_side)
+ *   the rest  -> Earth dirt   (earth_dirt, the normal background texture)
  *
- * - Árbol grande (se puede mover arriba/abajo): la "primera fila" es la de arriba del MAPA,
- *   así al hacer scroll el suelo se mueve junto con los logros.
- * - Árbol pequeño (Minecraft lo centra y no deja moverlo): el fondo se alinea con el borde
- *   de arriba de la ventana, así el césped queda pegado arriba y nunca se ve "vacío".
+ * - Big tree (can be moved up/down): the "first row" is the top row of the MAP,
+ *   so when scrolling the ground moves together with the advancements.
+ * - Small tree (Minecraft centers it and doesn't let you move it): the background is aligned
+ *   with the top edge of the window, so the grass stays at the top and never looks "empty".
  *
- * Las demás pestañas (vanilla y de otros mods) no se tocan.
+ * Other tabs (vanilla and from other mods) aren't touched.
  */
 @Mixin(AdvancementTab.class)
 public abstract class AdvancementTabMixin {
@@ -37,7 +37,7 @@ public abstract class AdvancementTabMixin {
 
     @Shadow public abstract boolean canScrollVertically();
 
-    /** Textura de fondo que activa el modo Earth (la pone ModAdvancementProvider: "block/earth_dirt"). */
+    /** Background texture that enables Earth mode (set by ModAdvancementProvider: "block/earth_dirt"). */
     @Unique
     private static final Identifier TRAVELYOUREARTH$EARTH_DIRT =
             Identifier.fromNamespaceAndPath(TravelYourEarth.MODID, "textures/block/earth_dirt.png");
@@ -61,19 +61,19 @@ public abstract class AdvancementTabMixin {
             int row;
 
             if (this.canScrollVertically()) {
-                // Árbol grande: fila según el MAPA (restando el scroll). La fila 0 es el borde de arriba.
+                // Big tree: row based on the MAP (subtracting the scroll). Row 0 is the top edge.
                 row = Math.floorDiv(y - intScrollY, 16);
             } else {
-                // Árbol pequeño: vanilla corre los cuadros "intScrollY % 16" píxeles.
-                // Los devolvemos para que las filas empiecen justo en el borde de la ventana.
+                // Small tree: vanilla shifts the tiles "intScrollY % 16" pixels.
+                // We undo it so the rows start right at the edge of the window.
                 y -= intScrollY % 16;
                 row = Math.floorDiv(y, 16);
             }
 
             if (row == 0) {
-                texture = TRAVELYOUREARTH$EARTH_GRASS_SIDE;   // césped arriba
+                texture = TRAVELYOUREARTH$EARTH_GRASS_SIDE;   // grass on top
             }
-            // cualquier otra fila: tierra Earth (el fondo normal)
+            // any other row: Earth dirt (the normal background)
         }
 
         graphics.blit(pipeline, texture, x, y, u, v, width, height, textureWidth, textureHeight);

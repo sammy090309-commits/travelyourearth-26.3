@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.Blocks;
 import java.util.List;
 import java.util.Set;
 
+/** Generates the recipes of the mod (crafting, smelting and blasting). */
 public class ModRecipeProvider extends RecipeProvider {
 
     public ModRecipeProvider(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
@@ -31,7 +32,7 @@ public class ModRecipeProvider extends RecipeProvider {
     }
 
     // =====================================================================
-    // BOOTSTRAP (reemplaza a la vieja clase Runner)
+    // BOOTSTRAP (replaces the old Runner class)
     // =====================================================================
     public static MultiRegistryBootstrap create() {
         return new MultiRegistryBootstrap() {
@@ -51,7 +52,7 @@ public class ModRecipeProvider extends RecipeProvider {
     }
 
     // =====================================================================
-    // RECETAS (sin cambios respecto a tu versión en 26.2)
+    // RECIPES
     // =====================================================================
     @Override
     protected void buildRecipes() {
@@ -62,7 +63,7 @@ public class ModRecipeProvider extends RecipeProvider {
     }
 
     // ---------------------------------------------------------------------
-    // Bloques
+    // Blocks
     // ---------------------------------------------------------------------
     private void buildRubyBlockRecipes() {
         shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.RUBY_BLOCK.get())
@@ -92,7 +93,7 @@ public class ModRecipeProvider extends RecipeProvider {
     }
 
     // ---------------------------------------------------------------------
-    // Herramientas y armas
+    // Tools and weapons
     // ---------------------------------------------------------------------
     private void buildRubyToolRecipes() {
         rubyTool(RecipeCategory.TOOLS,  ModItems.RUBY_AXE.get(),     "AA", "SA", "S ");
@@ -104,7 +105,7 @@ public class ModRecipeProvider extends RecipeProvider {
     }
 
     // ---------------------------------------------------------------------
-    // Armaduras
+    // Armor
     // ---------------------------------------------------------------------
     private void buildRubyArmorRecipes() {
         rubyArmor(ModItems.RUBY_BOOTS.get(),      "A A", "A A");
@@ -114,7 +115,7 @@ public class ModRecipeProvider extends RecipeProvider {
     }
 
     // ---------------------------------------------------------------------
-    // Fundición (horno y alto horno)
+    // Smelting (furnace and blast furnace)
     // ---------------------------------------------------------------------
     private void buildRubySmeltingRecipes() {
         List<ItemLike> rubySmeltables = List.of(
@@ -122,14 +123,16 @@ public class ModRecipeProvider extends RecipeProvider {
                 ModBlocks.DEEPSLATE_RUBY_ORE.get()
         );
 
-        // Igual que el diamante en 26.3: 200 ticks en horno y en alto horno
+        // Same as diamond in 26.3: 200 ticks in the furnace and in the blast furnace
         oreSmelting(rubySmeltables, RecipeCategory.MISC, CookingBookCategory.MISC, ModItems.RUBY.get(), 0.85f, 200, "ruby");
         oreBlasting(rubySmeltables, RecipeCategory.MISC, CookingBookCategory.MISC, ModItems.RUBY.get(), 0.85f, 200, "ruby");
     }
 
     // =====================================================================
-    // HELPERS (sin cambios)
+    // HELPERS
     // =====================================================================
+
+    /** Ruby tool: 'A' = ruby, 'S' = stick. */
     private void rubyTool(RecipeCategory category, ItemLike result, String... rows) {
         var recipe = shaped(category, result);
         for (String row : rows) {
@@ -141,6 +144,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .save(output);
     }
 
+    /** Ruby armor piece: 'A' = ruby. */
     private void rubyArmor(ItemLike result, String... rows) {
         var recipe = shaped(RecipeCategory.COMBAT, result);
         for (String row : rows) {
@@ -151,6 +155,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .save(output);
     }
 
+    /** Same as vanilla, but the recipes are saved with the mod's namespace (travelyourearth:...). */
     @Override
     protected <T extends AbstractCookingRecipe> void oreCooking(AbstractCookingRecipe.Factory<T> factory, List<ItemLike> smeltables,
                                                                 RecipeCategory craftingCategory, CookingBookCategory cookingCategory, ItemLike result,

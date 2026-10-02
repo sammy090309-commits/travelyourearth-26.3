@@ -13,11 +13,11 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 /**
- * Pestaña creativa "Travel Your Earth".
+ * "Travel Your Earth" creative tab.
  *
- * La pestaña siempre se registra, pero si la config "showCreativeTab" está en false
- * no le metemos ningún ítem, y Minecraft esconde solo las pestañas vacías.
- * (Así no hay que tocar registros según la config, que daría problemas en servidores.)
+ * The tab is always registered, but if the "showCreativeTab" config is false
+ * we don't put any item in it, and Minecraft hides empty tabs by itself.
+ * (This way we don't change registries based on the config, which would cause problems on servers.)
  */
 public class ModCreativeModTabs {
 
@@ -28,28 +28,28 @@ public class ModCreativeModTabs {
             CREATIVE_MODE_TABS.register("travelyourearth_tab", () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.travelyourearth"))
                     .icon(() -> new ItemStack(ModBlocks.EARTH_BLOCK.get()))
-                    .withTabsBefore(CreativeModeTabs.SPAWN_EGGS) // va después de las de vanilla
+                    .withTabsBefore(CreativeModeTabs.SPAWN_EGGS) // goes after the vanilla tabs
                     .displayItems((parameters, output) -> {
-                        if (!isEnabled()) return; // pestaña vacía = oculta
+                        if (!isEnabled()) return; // empty tab = hidden
 
-                        // Materiales
+                        // Materials
                         output.accept(ModItems.RUBY.get());
                         output.accept(ModBlocks.RUBY_BLOCK.get());
                         output.accept(ModBlocks.RUBY_ORE.get());
                         output.accept(ModBlocks.DEEPSLATE_RUBY_ORE.get());
                         output.accept(ModBlocks.HARDENED_GLASS.get());
 
-                        // Herramientas
+                        // Tools
                         output.accept(ModItems.RUBY_SHOVEL.get());
                         output.accept(ModItems.RUBY_PICKAXE.get());
                         output.accept(ModItems.RUBY_AXE.get());
                         output.accept(ModItems.RUBY_HOE.get());
 
-                        // Armas
+                        // Weapons
                         output.accept(ModItems.RUBY_SWORD.get());
                         output.accept(ModItems.RUBY_SPEAR.get());
 
-                        // Armaduras
+                        // Armor
                         output.accept(ModItems.RUBY_HELMET.get());
                         output.accept(ModItems.RUBY_CHESTPLATE.get());
                         output.accept(ModItems.RUBY_LEGGINGS.get());
@@ -59,7 +59,7 @@ public class ModCreativeModTabs {
                     })
                     .build());
 
-    /** La config es del cliente: si no está cargada (por ejemplo en un servidor), la tratamos como activada. */
+    /** The config is client-side: if it isn't loaded (for example on a server), we treat it as enabled. */
     private static boolean isEnabled() {
         return !Config.SPEC.isLoaded() || Config.SHOW_CREATIVE_TAB.get();
     }

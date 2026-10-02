@@ -28,13 +28,24 @@ import net.minecraft.world.level.block.Block;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Generates the block and item models of the mod. */
 public class ModModelProvider extends ModelProvider {
-    public ModModelProvider(PackOutput output){
+
+    /** Default leather color in vanilla (the same one ItemModelGenerators uses). */
+    private static final int LEATHER_DEFAULT_COLOR = -6265536;
+
+    public ModModelProvider(PackOutput output) {
         super(output, TravelYourEarth.MODID);
     }
 
     @Override
     protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
+
+        // =====================================================================
+        // ITEMS
+        // =====================================================================
+
+        // --- Ruby, tools and weapons ---
         itemModels.generateFlatItem(ModItems.RUBY.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.RUBY_SWORD.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
         itemModels.generateFlatItem(ModItems.RUBY_PICKAXE.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
@@ -43,18 +54,19 @@ public class ModModelProvider extends ModelProvider {
         itemModels.generateFlatItem(ModItems.RUBY_HOE.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
         itemModels.generateSpear(ModItems.RUBY_SPEAR.get());
 
-        // CAMBIO (26.3): antes era itemModels.generateTrimmableArmorSet(...).
-        // Ese método de vanilla solo conoce los materiales de trim vanilla, así que el caso del
-        // rubí se había añadido A MANO al JSON generado. Ahora lo genera el datagen.
+        // --- Ruby armor (with trims) ---
+        // 26.3: this used to be itemModels.generateTrimmableArmorSet(...).
+        // That vanilla method only knows the vanilla trim materials, so the ruby case
+        // had been added BY HAND to the generated JSON. Now datagen generates it.
         generateRubyTrimmableItem(itemModels, ModItems.RUBY_HELMET.get(), ItemModelGenerators.TRIM_PREFIX_HELMET);
         generateRubyTrimmableItem(itemModels, ModItems.RUBY_CHESTPLATE.get(), ItemModelGenerators.TRIM_PREFIX_CHESTPLATE);
         generateRubyTrimmableItem(itemModels, ModItems.RUBY_LEGGINGS.get(), ItemModelGenerators.TRIM_PREFIX_LEGGINGS);
         generateRubyTrimmableItem(itemModels, ModItems.RUBY_BOOTS.get(), ItemModelGenerators.TRIM_PREFIX_BOOTS);
 
-        // NUEVO: trim de rubí visible en el ícono de las armaduras VANILLA.
-        // Los modelos vanilla solo conocen los 11 materiales vanilla, así que sobrescribimos su
-        // definición de ítem (assets/minecraft/items/*.json) añadiendo el caso del rubí.
-        // Para los materiales vanilla se REUSAN los modelos de vanilla (no se regeneran).
+        // --- Ruby trim on VANILLA armor icons ---
+        // Vanilla models only know the 11 vanilla materials, so we override their
+        // item definition (assets/minecraft/items/*.json) adding the ruby case.
+        // For the vanilla materials, the vanilla models are REUSED (not regenerated).
         addRubyTrimToVanillaArmorSet(itemModels, Items.LEATHER_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS, true);
         addRubyTrimToVanillaArmorSet(itemModels, Items.COPPER_HELMET, Items.COPPER_CHESTPLATE, Items.COPPER_LEGGINGS, Items.COPPER_BOOTS, false);
         addRubyTrimToVanillaArmorSet(itemModels, Items.CHAINMAIL_HELMET, Items.CHAINMAIL_CHESTPLATE, Items.CHAINMAIL_LEGGINGS, Items.CHAINMAIL_BOOTS, false);
@@ -64,32 +76,42 @@ public class ModModelProvider extends ModelProvider {
         addRubyTrimToVanillaArmorSet(itemModels, Items.NETHERITE_HELMET, Items.NETHERITE_CHESTPLATE, Items.NETHERITE_LEGGINGS, Items.NETHERITE_BOOTS, false);
         addRubyTrimToVanillaItem(itemModels, Items.TURTLE_HELMET, ItemModelGenerators.TRIM_PREFIX_HELMET, false);
 
+        // --- Animal armor ---
         itemModels.generateFlatItem(ModItems.RUBY_HORSE_ARMOR.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.RUBY_NAUTILUS_ARMOR.get(), ModelTemplates.FLAT_ITEM);
 
-        /* BLOCKS */
+        // =====================================================================
+        // BLOCKS
+        // =====================================================================
+
+        // --- Ruby ---
         blockModels.createTrivialCube(ModBlocks.RUBY_BLOCK.get());
         blockModels.createTrivialCube(ModBlocks.RUBY_ORE.get());
         blockModels.createTrivialCube(ModBlocks.DEEPSLATE_RUBY_ORE.get());
         blockModels.createTrivialCube(ModBlocks.HARDENED_GLASS.get());
 
-        // Bloque terráqueo: un cubo con una textura distinta en cada cara (como un planeta).
-        // createTrivialBlock = lo mismo que createTrivialCube, pero con NUESTRAS texturas.
-        // El modelo del ítem (el cubo 3D del inventario / Mod Tab) se genera solo.
+        // --- Earth ---
+        // Earth block: a cube with a different texture on each face (like a planet).
+        // createTrivialBlock = the same as createTrivialCube, but with OUR textures.
+        // The item model (the 3D cube in the inventory / Mod Tab) is generated automatically.
         blockModels.createTrivialBlock(ModBlocks.EARTH_BLOCK.get(),
                 TexturedModel.createDefault(ModModelProvider::earthBlockTextures, ModelTemplates.CUBE));
 
-        // Tierra Earth: como la tierra vanilla, con ROTACIÓN ALEATORIA (4 giros) para que el suelo
-        // no se vea repetido. Textura: textures/block/earth_dirt.png
+        // Earth dirt: like vanilla dirt, with RANDOM ROTATION (4 turns) so the ground
+        // doesn't look repeated. Texture: textures/block/earth_dirt.png
         blockModels.createRotatedVariantBlock(ModBlocks.EARTH_DIRT.get());
 
-        // Césped Earth: arriba earth_grass_top, lados earth_grass_side, abajo la tierra Earth.
-        // Sin tinte de bioma: las texturas ya vienen pintadas de verde.
+        // Earth grass: earth_grass_top on top, earth_grass_side on the sides, Earth dirt on the bottom.
+        // No biome tint: the textures are already painted green.
         blockModels.createTrivialBlock(ModBlocks.EARTH_GRASS.get(),
                 TexturedModel.createDefault(ModModelProvider::earthGrassTextures, ModelTemplates.CUBE_BOTTOM_TOP));
     }
 
-    /** Césped Earth: textures/block/earth_grass_top.png, earth_grass_side.png y earth_dirt.png */
+    // =========================================================================
+    // Block textures
+    // =========================================================================
+
+    /** Earth grass: textures/block/earth_grass_top.png, earth_grass_side.png and earth_dirt.png */
     private static TextureMapping earthGrassTextures(Block block) {
         return new TextureMapping()
                 .put(TextureSlot.TOP, TextureMapping.getBlockTexture(block, "_top"))
@@ -98,12 +120,12 @@ public class ModModelProvider extends ModelProvider {
     }
 
     /**
-     * Texturas del bloque terráqueo: textures/block/earth_block_<cara>.png
-     * En el inventario se ven: arriba (up), izquierda (north) y derecha (west).
+     * Earth block textures: textures/block/earth_block_<face>.png
+     * In the inventory you can see: top (up), left (north) and right (west).
      */
     private static TextureMapping earthBlockTextures(Block block) {
         return new TextureMapping()
-                .put(TextureSlot.PARTICLE, TextureMapping.getBlockTexture(block, "_north")) // partículas al romperlo
+                .put(TextureSlot.PARTICLE, TextureMapping.getBlockTexture(block, "_north")) // particles when broken
                 .put(TextureSlot.UP, TextureMapping.getBlockTexture(block, "_up"))
                 .put(TextureSlot.DOWN, TextureMapping.getBlockTexture(block, "_down"))
                 .put(TextureSlot.NORTH, TextureMapping.getBlockTexture(block, "_north"))
@@ -112,21 +134,25 @@ public class ModModelProvider extends ModelProvider {
                 .put(TextureSlot.WEST, TextureMapping.getBlockTexture(block, "_west"));
     }
 
+    // =========================================================================
+    // Trims
+    // =========================================================================
+
     /**
-     * Copia de ItemModelGenerators#generateTrimmableItem (vanilla 26.3, sin capa teñible)
-     * + un caso extra para el material de trim de rubí.
+     * Copy of ItemModelGenerators#generateTrimmableItem (vanilla 26.3, without the dyeable layer)
+     * + an extra case for the ruby trim material.
      *
-     * - Materiales vanilla: igual que vanilla (ruby_boots_copper_trim, ruby_boots_iron_trim, ...).
-     * - Rubí sobre armadura de rubí: usa la paleta "ruby_darker", igual que vanilla hace con
-     *   hierro sobre hierro, oro sobre oro, etc. Sprite: minecraft:trims/items/boots_trim_ruby_darker
-     *   (lo crea ModSpriteSourceProvider).
+     * - Vanilla materials: same as vanilla (ruby_boots_copper_trim, ruby_boots_iron_trim, ...).
+     * - Ruby on ruby armor: uses the "ruby_darker" palette, like vanilla does with
+     *   iron on iron, gold on gold, etc. Sprite: minecraft:trims/items/boots_trim_ruby_darker
+     *   (NeoForge creates it automatically from textures/palettes/trim/ruby_darker.png).
      */
     private static void generateRubyTrimmableItem(ItemModelGenerators itemModels, Item armor, Identifier slotTrimPrefix) {
         Identifier modelLocation = ModelLocationUtils.getModelLocation(armor);
         Material itemTexture = TextureMapping.getItemTexture(armor);
         List<SelectItemModel.SwitchCase<ResourceKey<TrimMaterial>>> cases = new ArrayList<>();
 
-        // 1) Los 11 materiales de trim vanilla
+        // 1) The 11 vanilla trim materials
         for (ItemModelGenerators.TrimMaterialData material : ItemModelGenerators.TRIM_MATERIAL_MODELS) {
             Identifier trimModelLocation = modelLocation.withSuffix("_" + material.palette().suffix() + "_trim");
             Material trimOverlay = new Material(slotTrimPrefix.withSuffix("_" + material.palette().suffix()));
@@ -134,22 +160,19 @@ public class ModModelProvider extends ModelProvider {
             cases.add(ItemModelUtils.when(material.materialKey(), ItemModelUtils.plainModel(trimModelLocation)));
         }
 
-        // 2) Nuestro material: rubí (versión oscura porque la armadura también es de rubí)
+        // 2) Our material: ruby (dark version, because the armor is also ruby)
         Identifier rubyTrimModelLocation = modelLocation.withSuffix("_ruby_trim");
         Material rubyTrimOverlay = new Material(slotTrimPrefix.withSuffix("_ruby_darker"));
         itemModels.generateLayeredItem(rubyTrimModelLocation, itemTexture, rubyTrimOverlay);
         cases.add(ItemModelUtils.when(ModTrimMaterials.RUBY, ItemModelUtils.plainModel(rubyTrimModelLocation)));
 
-        // 3) Modelo sin trim (el que se usa casi siempre) + definición del ítem con el select
+        // 3) Model without trim (the one used most of the time) + item definition with the select
         ModelTemplates.FLAT_ITEM.create(modelLocation, TextureMapping.layer0(itemTexture), itemModels.modelOutput);
         itemModels.itemModelOutput.accept(
                 armor,
                 ItemModelUtils.select(new TrimMaterialProperty(), ItemModelUtils.plainModel(modelLocation), cases)
         );
     }
-
-    /** Color por defecto del cuero en vanilla (el mismo que usa ItemModelGenerators). */
-    private static final int LEATHER_DEFAULT_COLOR = -6265536;
 
     private static void addRubyTrimToVanillaArmorSet(ItemModelGenerators itemModels, Item helmet, Item chestplate,
                                                      Item leggings, Item boots, boolean hasDyedLayer) {
@@ -160,43 +183,44 @@ public class ModModelProvider extends ModelProvider {
     }
 
     /**
-     * Rehace la definición de ítem de una armadura vanilla igual que vanilla 26.3
-     * (ItemModelGenerators#generateTrimmableItem) + el caso del rubí.
+     * Rebuilds the item definition of a vanilla armor piece like vanilla 26.3
+     * (ItemModelGenerators#generateTrimmableItem) + the ruby case.
      *
-     * - Casos vanilla: apuntan a los modelos que YA trae el juego (minecraft:item/iron_helmet_copper_trim, ...),
-     *   así que no se sobrescribe ningún modelo vanilla, solo la definición del ítem.
-     * - Caso rubí: genera minecraft:item/<pieza>_ruby_trim con el sprite minecraft:trims/items/<slot>_trim_ruby
-     *   (lo crea ModSpriteSourceProvider).
+     * - Vanilla cases: point to the models the game ALREADY has (minecraft:item/iron_helmet_copper_trim, ...),
+     *   so no vanilla model is overwritten, only the item definition.
+     * - Ruby case: generates minecraft:item/<piece>_ruby_trim with the sprite minecraft:trims/items/<slot>_trim_ruby
+     *   (NeoForge creates it automatically from textures/palettes/trim/ruby.png).
      */
     private static void addRubyTrimToVanillaItem(ItemModelGenerators itemModels, Item armor, Identifier slotTrimPrefix, boolean hasDyedLayer) {
         Identifier modelLocation = ModelLocationUtils.getModelLocation(armor);
         List<SelectItemModel.SwitchCase<ResourceKey<TrimMaterial>>> cases = new ArrayList<>();
 
-        // 1) Materiales vanilla -> modelos vanilla existentes
+        // 1) Vanilla materials -> existing vanilla models
         for (ItemModelGenerators.TrimMaterialData material : ItemModelGenerators.TRIM_MATERIAL_MODELS) {
             Identifier vanillaTrimModel = modelLocation.withSuffix("_" + material.palette().suffix() + "_trim");
             cases.add(ItemModelUtils.when(material.materialKey(), armorModel(vanillaTrimModel, hasDyedLayer)));
         }
 
-        // 2) Rubí -> modelo nuevo
+        // 2) Ruby -> new model
         Identifier rubyTrimModel = modelLocation.withSuffix("_ruby_trim");
         Material itemTexture = TextureMapping.getItemTexture(armor);
         Material rubyTrimOverlay = new Material(slotTrimPrefix.withSuffix("_ruby"));
         if (hasDyedLayer) {
-            // Cuero: base teñible + overlay sin teñir + trim (3 capas, como vanilla)
+            // Leather: dyeable base + undyed overlay + trim (3 layers, like vanilla)
             itemModels.generateLayeredItem(rubyTrimModel, itemTexture, TextureMapping.getItemTexture(armor, "_overlay"), rubyTrimOverlay);
         } else {
             itemModels.generateLayeredItem(rubyTrimModel, itemTexture, rubyTrimOverlay);
         }
         cases.add(ItemModelUtils.when(ModTrimMaterials.RUBY, armorModel(rubyTrimModel, hasDyedLayer)));
 
-        // 3) Sin trim -> modelo vanilla existente
+        // 3) No trim -> existing vanilla model
         itemModels.itemModelOutput.accept(
                 armor,
                 ItemModelUtils.select(new TrimMaterialProperty(), armorModel(modelLocation, hasDyedLayer), cases)
         );
     }
 
+    /** Leather armor gets the dye tint; the rest is a plain model. */
     private static net.minecraft.client.renderer.item.ItemModel.Unbaked armorModel(Identifier model, boolean hasDyedLayer) {
         return hasDyedLayer
                 ? ItemModelUtils.tintedModel(model, new Dye(LEATHER_DEFAULT_COLOR))

@@ -15,8 +15,14 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 
 import java.util.List;
 
+/**
+ * Shape and size of each ruby vein.
+ *   OreFeature(targets, size, discardChanceOnAirExposure)
+ *   - size: how big the vein can get (vanilla diamond main vein: 4)
+ *   - discard: chance of removing an ore that touches air, like caves (vanilla diamond main vein: 0.5)
+ */
 public class ModConfiguredFeatures {
-    // Qué forma y tamaño tiene cada veta de rubí
+
     public static final ResourceKey<Feature> RUBY_ORE_KEY = registerKey("ruby_ore");
     public static final ResourceKey<Feature> MOUNTAIN_RUBY_ORE_KEY = registerKey("mountain_ruby_ore");
     public static final ResourceKey<Feature> DAPPLED_RUBY_ORE_KEY = registerKey("dappled_ruby_ore");
@@ -25,20 +31,19 @@ public class ModConfiguredFeatures {
         RuleTest stoneReplaceables = new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES);
         RuleTest deepslateReplaceables = new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
 
-        // En piedra → mena de rubí; en pizarra profunda → mena de rubí de pizarra
+        // In stone -> ruby ore; in deepslate -> deepslate ruby ore
         List<BlockReplacement> rubyTargets = List.of(
                 new BlockReplacement(stoneReplaceables, ModBlocks.RUBY_ORE.get().defaultBlockState()),
                 new BlockReplacement(deepslateReplaceables, ModBlocks.DEEPSLATE_RUBY_ORE.get().defaultBlockState())
         );
 
-        // 1. TODOS LOS BIOMAS: igual que la veta principal del diamante (size 4 → 1 a 5 menas,
-        //    promedio ≈ 2) y 50% de descarte si toca aire (cuevas).
+        // 1. ALL BIOMES: size 5 (a bit bigger than the diamond's 4), 50% discard when touching air.
         context.register(RUBY_ORE_KEY, new OreFeature(rubyTargets, 5, 0.5f));
 
-        // 2. MONTAÑAS: mismas vetas que el diamante (size 4, 50% de descarte con aire).
-        context.register(MOUNTAIN_RUBY_ORE_KEY, new OreFeature(rubyTargets, 8, 0.5f));
+        // 2. MOUNTAINS: size 8 (twice the diamond's 4), 30% discard when touching air.
+        context.register(MOUNTAIN_RUBY_ORE_KEY, new OreFeature(rubyTargets, 8, 0.3f));
 
-        // 3. BOSQUE MOTEADO: size 8 → normalmente 4 a 8 menas por veta (promedio ≈ 5.7).
+        // 3. DAPPLED FOREST: size 3 (small veins), no discard.
         context.register(DAPPLED_RUBY_ORE_KEY, new OreFeature(rubyTargets, 3));
     }
 

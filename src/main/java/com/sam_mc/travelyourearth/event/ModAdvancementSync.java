@@ -19,31 +19,31 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Mantiene los logros del mod aunque cambies la opción "Mod Tab de logros".
+ * Keeps the mod advancements even if you change the "Mod Advancement Tab" option.
  *
- * El problema: cada logro existe en DOS versiones con nombres distintos
- * (travelyourearth:adventure/... en "Aventura" y travelyourearth:ruby/... en la pestaña del mod)
- * y solo una está cargada. Minecraft guarda el progreso por nombre y BORRA el de los logros
- * que no están cargados, así que al cambiar la opción se perdía el progreso.
+ * The problem: each advancement exists in TWO versions with different names
+ * (travelyourearth:adventure/... in "Adventure" and travelyourearth:ruby/... in the mod tab)
+ * and only one is loaded. Minecraft saves progress by name and DELETES the progress of
+ * advancements that aren't loaded, so changing the option used to lose the progress.
  *
- * La solución: una "libreta" propia guardada en el jugador (sobrevive a la muerte).
- *   - Al conseguir un logro del mod -> se anota su nombre "lógico" (obtain_ruby, fireproof).
- *   - Al entrar al mundo o con /reload -> se da la versión que esté cargada de cada logro anotado.
+ * The solution: our own "notebook" saved in the player (it survives death).
+ *   - When a mod advancement is earned -> its "logical" name is written down (obtain_ruby, fireproof).
+ *   - When joining the world or with /reload -> the loaded version of each written advancement is granted.
  */
 @EventBusSubscriber(modid = TravelYourEarth.MODID)
 public class ModAdvancementSync {
 
-    /** Dónde se guarda la libreta dentro de los datos del jugador. */
+    /** Where the notebook is saved inside the player data. */
     private static final String NOTEBOOK = TravelYourEarth.MODID + ":earned_advancements";
 
     /**
-     * Nombre lógico -> todas sus versiones (la de Aventura y la de la pestaña del mod).
-     * Si añades un logro nuevo con dos versiones, añádelo aquí también.
+     * Logical name -> all its versions (the Adventure one and the mod tab one).
+     * If you add a new advancement with two versions, add it here too.
      */
     private static final Map<String, List<Identifier>> ADVANCEMENTS = Map.of(
             "obtain_ruby", List.of(
                     id("adventure/obtain_ruby"),
-                    id("ruby/root"),          // raíz "Travel Your Earth" (se gana a la vez que ¿Volviste?)
+                    id("ruby/root"),          // "Travel Your Earth" root (earned together with "You're Back?")
                     id("ruby/obtain_ruby")),
             "fireproof", List.of(
                     id("adventure/fireproof"),
@@ -51,7 +51,7 @@ public class ModAdvancementSync {
     );
 
     // =========================================================================
-    // 1) Anotar en la libreta cuando se consigue un logro del mod
+    // 1) Write it in the notebook when a mod advancement is earned
     // =========================================================================
     @SubscribeEvent
     public static void onAdvancementEarned(AdvancementEvent.AdvancementEarnEvent event) {
@@ -64,7 +64,7 @@ public class ModAdvancementSync {
     }
 
     // =========================================================================
-    // 2) Sincronizar al entrar al mundo...
+    // 2) Sync when joining the world...
     // =========================================================================
     @SubscribeEvent
     public static void onLogin(PlayerEvent.PlayerLoggedInEvent event) {
@@ -73,10 +73,10 @@ public class ModAdvancementSync {
         }
     }
 
-    // ...y después de /reload (la opción también se puede aplicar con /reload)
+    // ...and after /reload (the option can also be applied with /reload)
     @SubscribeEvent
     public static void onDatapackSync(OnDatapackSyncEvent event) {
-        if (event.getPlayer() == null) { // null = /reload para todos (al entrar ya lo hace onLogin)
+        if (event.getPlayer() == null) { // null = /reload for everyone (onLogin already handles joining)
             event.getRelevantPlayers().forEach(ModAdvancementSync::sync);
         }
     }
@@ -87,8 +87,8 @@ public class ModAdvancementSync {
         for (Map.Entry<String, List<Identifier>> entry : ADVANCEMENTS.entrySet()) {
             String name = entry.getKey();
 
-            // a) ¿Ya tiene hecha alguna versión cargada? -> anotarlo
-            //    (sirve para los jugadores que ganaron el logro antes de existir la libreta)
+            // a) Has it already completed a loaded version? -> write it down
+            //    (useful for players who earned the advancement before the notebook existed)
             for (Identifier id : entry.getValue()) {
                 AdvancementHolder holder = server.getAdvancements().get(id);
                 if (holder != null && player.getAdvancements().getOrStartProgress(holder).isDone()) {
@@ -96,15 +96,15 @@ public class ModAdvancementSync {
                 }
             }
 
-            // b) Si está anotado -> dar TODAS las versiones que estén cargadas y le falten
+            // b) If it's written down -> grant ALL the loaded versions it's missing
             if (read(player, name)) {
                 for (Identifier id : entry.getValue()) {
                     AdvancementHolder holder = server.getAdvancements().get(id);
-                    if (holder == null) continue; // esta versión no está cargada ahora
+                    if (holder == null) continue; // this version isn't loaded right now
 
                     AdvancementProgress progress = player.getAdvancements().getOrStartProgress(holder);
                     if (!progress.isDone()) {
-                        // Copia de la lista para no modificarla mientras se recorre
+                        // Copy of the list so it isn't modified while looping over it
                         for (String criterion : new ArrayList<>(toList(progress.getRemainingCriteria()))) {
                             player.getAdvancements().award(holder, criterion);
                         }
@@ -115,7 +115,7 @@ public class ModAdvancementSync {
     }
 
     // =========================================================================
-    // Libreta: CompoundTag dentro de "PlayerPersisted" (NeoForge lo copia al morir)
+    // Notebook: CompoundTag inside "PlayerPersisted" (NeoForge copies it on death)
     // =========================================================================
     private static boolean read(Player player, String name) {
         CompoundTag persisted = player.getPersistentData().getCompoundOrEmpty(Player.PERSISTED_NBT_TAG);
@@ -132,13 +132,13 @@ public class ModAdvancementSync {
     }
 
     // =========================================================================
-    // Ayudas
+    // Helpers
     // =========================================================================
     private static Identifier id(String path) {
         return Identifier.fromNamespaceAndPath(TravelYourEarth.MODID, path);
     }
 
-    /** De "travelyourearth:ruby/fireproof" saca "fireproof"; null si no es uno de estos logros. */
+    /** From "travelyourearth:ruby/fireproof" gets "fireproof"; null if it isn't one of these advancements. */
     private static String logicalName(Identifier id) {
         for (Map.Entry<String, List<Identifier>> entry : ADVANCEMENTS.entrySet()) {
             if (entry.getValue().contains(id)) return entry.getKey();

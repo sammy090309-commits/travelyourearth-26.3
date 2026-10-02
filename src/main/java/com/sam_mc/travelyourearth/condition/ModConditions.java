@@ -8,7 +8,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
-/** Condiciones de datos del mod (para los "neoforge:conditions" de los JSON). */
+/** Data conditions of the mod (used in the "neoforge:conditions" of JSON files). */
 public class ModConditions {
 
     public static final DeferredRegister<MapCodec<? extends ICondition>> CONDITION_CODECS =

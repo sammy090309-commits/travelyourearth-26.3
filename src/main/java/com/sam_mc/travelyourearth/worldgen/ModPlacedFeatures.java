@@ -16,14 +16,15 @@ import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import java.util.List;
 
 /**
- * Cuántas vetas de rubí se intentan poner por chunk y a qué altura.
+ * How many ruby veins are attempted per chunk and at what height.
+ * (Vein shape: ModConfiguredFeatures | biomes: ModBiomeModifiers)
  *
- * Referencia vanilla (wiki oficial, Java):
- *   - Diamante: 4 tandas (7 + 1/9 + 4 + 2 vetas por chunk) debajo de Y 16  → ≈ 26 menas/chunk
- *   - Hierro: 90 + 10 + 10 vetas por chunk                                 → muchísimo más
- * Los números "≈ menas/chunk" son aproximados (cuentan lo que cae dentro del mundo y bajo tierra).
+ * Vanilla reference (official wiki, Java):
+ *   - Diamond: 4 batches (7 + 1/9 + 4 + 2 veins per chunk) below Y 16, size 4  -> about 26 ores/chunk
+ *   - Iron: 90 + 10 + 10 veins per chunk                                        -> much more
  */
 public class ModPlacedFeatures {
+
     public static final ResourceKey<PlacedFeature> RUBY_ORE_PLACED_KEY = registerKey("ruby_ore_placed");
     public static final ResourceKey<PlacedFeature> MOUNTAIN_RUBY_ORE_PLACED_KEY = registerKey("mountain_ruby_ore_placed");
     public static final ResourceKey<PlacedFeature> DAPPLED_RUBY_ORE_PLACED_KEY = registerKey("dappled_ruby_ore_placed");
@@ -31,10 +32,10 @@ public class ModPlacedFeatures {
     public static void bootstrap(BootstrapContext<PlacedFeature> context) {
         var configuredFeatures = context.lookup(Registries.FEATURE);
 
-        // 1. TODOS LOS BIOMAS: MUCHO más raro que el diamante.
-        // Misma forma que la veta principal del diamante: triángulo de Y -144 a Y 16
-        // (pico en Y -64, el fondo; nada por encima de Y 16), pero solo 4 vetas en vez de 7
-        // y sin las otras 3 tandas del diamante → ≈ 4 menas/chunk (el diamante ≈ 26).
+        // 1. ALL BIOMES: much rarer than diamond.
+        // Same shape as the diamond main vein: triangle from Y -144 to Y 16
+        // (peak at Y -64, the bottom; nothing above Y 16), but only 4 veins instead of 7
+        // and without the other 3 diamond batches.
         register(context, RUBY_ORE_PLACED_KEY,
                 configuredFeatures.getOrThrow(ModConfiguredFeatures.RUBY_ORE_KEY),
                 OrePlacements.commonOrePlacement(4,
@@ -42,9 +43,8 @@ public class ModPlacedFeatures {
                                 VerticalAnchor.absolute(-144),
                                 VerticalAnchor.absolute(16))));
 
-        // 2. MONTAÑAS: LA MISMA probabilidad que el diamante.
-        // Se suma a la de "todos los biomas": 14 vetas pequeñas de Y 60 hacia abajo (pico en Y -2)
-        // ≈ 25 menas + ≈ 4 de la general ≈ 29 menas/chunk ≈ lo mismo que el diamante (≈ 26).
+        // 2. MOUNTAINS: added on top of the "all biomes" layer.
+        // 14 veins per chunk, triangle from Y -64 to Y 60 (peak at Y -2).
         register(context, MOUNTAIN_RUBY_ORE_PLACED_KEY,
                 configuredFeatures.getOrThrow(ModConfiguredFeatures.MOUNTAIN_RUBY_ORE_KEY),
                 OrePlacements.commonOrePlacement(14,
@@ -52,9 +52,9 @@ public class ModPlacedFeatures {
                                 VerticalAnchor.absolute(-64),
                                 VerticalAnchor.absolute(60))));
 
-        // 3. BOSQUE MOTEADO: uniforme de Y 12 a Y 256 (igual de probable a cualquier altura).
-        // Un poco MÁS común que el diamante pero MÁS raro que el hierro:
-        // 20 intentos (≈ 1/3 caen bajo tierra) → ≈ 36 menas + ≈ 4 de la general ≈ 40 menas/chunk.
+        // 3. DAPPLED FOREST: added on top of the "all biomes" layer.
+        // 25 attempts per chunk, uniform from Y 12 to Y 256 (same chance at any height;
+        // attempts that land in the air don't place anything).
         register(context, DAPPLED_RUBY_ORE_PLACED_KEY,
                 configuredFeatures.getOrThrow(ModConfiguredFeatures.DAPPLED_RUBY_ORE_KEY),
                 OrePlacements.commonOrePlacement(25,

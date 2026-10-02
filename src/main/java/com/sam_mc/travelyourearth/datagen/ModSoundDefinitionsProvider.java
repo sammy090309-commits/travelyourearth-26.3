@@ -7,7 +7,7 @@ import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.common.data.SoundDefinition;
 import net.neoforged.neoforge.common.data.SoundDefinitionsProvider;
 
-/** Genera assets/travelyourearth/sounds.json */
+/** Generates assets/travelyourearth/sounds.json */
 public class ModSoundDefinitionsProvider extends SoundDefinitionsProvider {
 
     public ModSoundDefinitionsProvider(PackOutput output) {
@@ -16,10 +16,13 @@ public class ModSoundDefinitionsProvider extends SoundDefinitionsProvider {
 
     @Override
     public void registerSounds() {
+
+        // Note block on top of a ruby block: electric guitar
         add(ModSounds.NOTE_BLOCK_RUBY, SoundDefinition.definition()
-                .subtitle("subtitles.block.note_block.note") // subtítulo vanilla
+                .subtitle("subtitles.block.note_block.note") // vanilla subtitle
                 .with(sound(modSound("note/ruby"))));
 
+        // Equipping ruby armor: 4 variants, played at 30% volume
         add(ModSounds.ARMOR_EQUIP_RUBY, SoundDefinition.definition()
                 .subtitle("subtitles.travelyourearth.item.armor.equip_ruby")
                 .with(
@@ -30,7 +33,7 @@ public class ModSoundDefinitionsProvider extends SoundDefinitionsProvider {
                 ));
     }
 
-    /** Atajo: assets/travelyourearth/sounds/<path>.ogg */
+    /** Shortcut: assets/travelyourearth/sounds/<path>.ogg */
     private static Identifier modSound(String path) {
         return Identifier.fromNamespaceAndPath(TravelYourEarth.MODID, path);
     }

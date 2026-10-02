@@ -12,22 +12,22 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 
 /**
- * Zorros con rubí en la boca.
+ * Foxes with a ruby in their mouth.
  *
- * Vanilla (wiki, Java): el 20% de los zorros aparece con algo en la boca y, de esos,
- * el 5% es esmeralda -> 1% de todos los zorros. Esto está escrito en Java dentro de
- * Fox#populateDefaultEquipmentSlots, NO en una loot table, así que no se puede hacer con datagen.
+ * Vanilla (wiki, Java): 20% of foxes spawn with something in their mouth and, of those,
+ * 5% is an emerald -> 1% of all foxes. This is written in Java inside
+ * Fox#populateDefaultEquipmentSlots, NOT in a loot table, so it can't be done with datagen.
  *
- * Rubí: el 4% de los ítems de la boca -> ~0.8% de todos los zorros (un poquito menos que la esmeralda).
- * Como en vanilla, el zorro suelta al morir el ítem que lleva en la boca (100%).
+ * Ruby: 2% of the mouth items -> ~0.4% of all foxes (less than the emerald).
+ * Like in vanilla, the fox drops the item in its mouth when it dies (100%).
  */
 @EventBusSubscriber(modid = TravelYourEarth.MODID)
 public class ModFoxEvents {
 
-    /** Parte de los ítems de la boca que serán rubí (vanilla: esmeralda = 0.05). */
+    /** Share of the mouth items that will be ruby (vanilla: emerald = 0.05). */
     private static final float RUBY_SHARE_OF_MOUTH_ITEMS = 0.02f;
 
-    /** Marca guardada en el zorro para tirar el dado solo UNA vez en su vida. */
+    /** Mark saved on the fox so the dice is rolled only ONCE in its life. */
     private static final String CHECKED_TAG = TravelYourEarth.MODID + ":mouth_item_checked";
 
     @SubscribeEvent
@@ -35,18 +35,18 @@ public class ModFoxEvents {
         if (event.getLevel().isClientSide()) return;
         if (!(event.getEntity() instanceof Fox fox)) return;
 
-        // No usamos loadedFromDisk(): los zorros que aparecen al generar el mundo (la mayoría)
-        // entran como "cargados del disco". Por eso guardamos una marca en el propio zorro.
+        // We don't use loadedFromDisk(): foxes that spawn during world generation (most of them)
+        // join as "loaded from disk". That's why we save a mark on the fox itself.
         CompoundTag data = fox.getPersistentData();
         if (data.getBooleanOr(CHECKED_TAG, false)) return;
         data.putBoolean(CHECKED_TAG, true);
 
         ItemStack mouth = fox.getItemBySlot(EquipmentSlot.MAINHAND);
-        // Solo reemplazamos lo que trae al aparecer (huevo, trigo, cuero, pluma, conejo...).
-        // Nunca tocamos la esmeralda, así ella se queda en su 1% de vanilla.
+        // We only replace what it brings when spawning (egg, wheat, leather, feather, rabbit...).
+        // We never touch the emerald, so it stays at its vanilla 1%.
         if (mouth.isEmpty() || mouth.is(Items.EMERALD)) return;
 
-        // 0.04 / 0.95: así el rubí queda en el 4% del total de ítems de la boca
+        // 0.02 / 0.95: this way the ruby ends up as 2% of all mouth items
         float chance = RUBY_SHARE_OF_MOUTH_ITEMS / (1.0f - 0.05f);
         if (fox.getRandom().nextFloat() < chance) {
             fox.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.RUBY.get()));

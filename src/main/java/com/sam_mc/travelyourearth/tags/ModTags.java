@@ -8,15 +8,22 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
+/**
+ * Tag keys of the mod. Their contents are generated in ModBlockTagsProvider and ModItemTagsProvider.
+ */
 public class ModTags {
+
+    // =========================================================================
+    // Blocks
+    // =========================================================================
     public static class Blocks {
 
-        // ---- Del mod (travelyourearth:...) ----
+        // ---- Mod tags (travelyourearth:...) ----
         public static final TagKey<Block> NEEDS_RUBY_TOOL = createTag("needs_ruby_tool");
         public static final TagKey<Block> INCORRECT_FOR_RUBY_TOOL = createTag("incorrect_for_ruby_tool");
 
-        // ---- Comunes (c:...) -> compatibilidad con otros mods ----
-        // Los tags "padre" (c:ores, c:storage_blocks...) ya existen en NeoForge: Tags.Blocks.*
+        // ---- Common tags (c:...) -> compatibility with other mods ----
+        // The "parent" tags (c:ores, c:storage_blocks...) already exist in NeoForge: Tags.Blocks.*
         public static final TagKey<Block> ORES_RUBY = commonTag("ores/ruby");
         public static final TagKey<Block> STORAGE_BLOCKS_RUBY = commonTag("storage_blocks/ruby");
 
@@ -29,12 +36,15 @@ public class ModTags {
         }
     }
 
+    // =========================================================================
+    // Items
+    // =========================================================================
     public static class Items {
 
-        // ---- Del mod (travelyourearth:...) ----
+        // ---- Mod tags (travelyourearth:...) ----
         public static final TagKey<Item> RUBY_REPAIRABLE = createTag("ruby_repairable");
 
-        // ---- Comunes (c:...) -> compatibilidad con otros mods ----
+        // ---- Common tags (c:...) -> compatibility with other mods ----
         public static final TagKey<Item> GEMS_RUBY = commonTag("gems/ruby");
         public static final TagKey<Item> ORES_RUBY = commonTag("ores/ruby");
         public static final TagKey<Item> STORAGE_BLOCKS_RUBY = commonTag("storage_blocks/ruby");

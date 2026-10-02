@@ -3,11 +3,11 @@ package com.sam_mc.travelyourearth;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 /**
- * Configuración del mod.
+ * Mod configuration.
  *
- * CLIENT -> config/travelyourearth-client.toml  (solo afecta a tu pantalla)
- * COMMON -> config/travelyourearth-common.toml  (datos del juego: la usa el servidor,
- *                                                también el "servidor" interno de un mundo de un jugador)
+ * CLIENT -> config/travelyourearth-client.toml  (only affects your screen)
+ * LOCAL  -> game data: used by the server, including the internal "server" of a singleplayer world
+ *           (it was called COMMON before NeoForge 26.3.0.37-beta; the variable names keep "COMMON")
  */
 public class Config {
 
@@ -23,11 +23,11 @@ public class Config {
             .translation("travelyourearth.configuration.showCreativeTab")
             .define("showCreativeTab", true);
 
-    /** Config del cliente (se llama SPEC para no romper el código que ya lo usa). */
+    /** Client config (it's called SPEC so the code that already uses it doesn't break). */
     public static final ModConfigSpec SPEC = CLIENT_BUILDER.build();
 
     // =========================================================================
-    // COMMON
+    // LOCAL (formerly COMMON)
     // =========================================================================
     private static final ModConfigSpec.Builder COMMON_BUILDER = new ModConfigSpec.Builder();
 

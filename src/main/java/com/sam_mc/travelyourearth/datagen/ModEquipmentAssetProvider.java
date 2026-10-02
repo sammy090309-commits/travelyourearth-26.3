@@ -16,12 +16,21 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
+/**
+ * Generates assets/travelyourearth/equipment/*.json: how the ruby armor looks when worn
+ * (player, horse and nautilus layers).
+ */
 public class ModEquipmentAssetProvider implements DataProvider {
+
     private final PackOutput.PathProvider pathProvider;
 
     public ModEquipmentAssetProvider(PackOutput packOutput) {
         this.pathProvider = packOutput.createPathProvider(PackOutput.Target.RESOURCE_PACK, "equipment");
     }
+
+    // =========================================================================
+    // Equipment assets
+    // =========================================================================
 
     private static void bootstrap(BiConsumer<ResourceKey<EquipmentAsset>, EquipmentClientInfo> output) {
         output.accept(ModArmorMaterials.RUBY_KEY, EquipmentClientInfo.builder()
@@ -30,13 +39,17 @@ public class ModEquipmentAssetProvider implements DataProvider {
                         new EquipmentClientInfo.Layer(Identifier.fromNamespaceAndPath(TravelYourEarth.MODID, "ruby")))
                 .addLayers(EquipmentClientInfo.LayerType.NAUTILUS_BODY,
                         new EquipmentClientInfo.Layer(Identifier.fromNamespaceAndPath(TravelYourEarth.MODID, "ruby")))
-                // NUEVO (26.3): trim de rubí sobre armadura de rubí -> paleta más oscura al llevarla puesta.
-                // Es lo que vanilla hace con hierro/oro/diamante/netherita/cobre en su EquipmentAssetProvider
-                // (reemplaza al antiguo "override_armor_assets" del trim material, que ya no existe).
+                // 26.3: ruby trim on ruby armor -> darker palette when worn.
+                // Vanilla does the same for iron/gold/diamond/netherite/copper in its EquipmentAssetProvider
+                // (it replaces the old "override_armor_assets" of the trim material, which no longer exists).
                 .replaceTrimPalette(ModTrimMaterials.RUBY,
                         Identifier.fromNamespaceAndPath(TravelYourEarth.MODID, "trim/ruby_darker"))
                 .build());
     }
+
+    // =========================================================================
+    // DataProvider
+    // =========================================================================
 
     @Override
     public CompletableFuture<?> run(CachedOutput cache) {

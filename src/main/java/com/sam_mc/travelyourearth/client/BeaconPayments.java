@@ -12,24 +12,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Lista ordenada de los pagos del faro (tag #minecraft:beacon_payment_items).
- * La usan el panel de materiales (el libro) y las páginas de la pestaña de minerales,
- * así los dos muestran lo mismo y en el mismo orden, incluidos los ítems de otros mods.
+ * Ordered list of beacon payments (tag #minecraft:beacon_payment_items).
+ * Used by the materials panel (the book) and by the pages of the minerals tab,
+ * so both show the same items in the same order, including items from other mods.
  *
- * Orden:  1. Gemas     (diamante, esmeralda, rubí, y gemas de otros mods: #c:gems)
- *         2. Lingotes  (netherita, oro, hierro, y lingotes de otros mods: #c:ingots)
- *         3. Otros     (cualquier otro pago de otros mods)
+ * Order:  1. Gems     (diamond, emerald, ruby, and gems from other mods: #c:gems)
+ *         2. Ingots   (netherite, gold, iron, and ingots from other mods: #c:ingots)
+ *         3. Others   (any other payment from other mods)
  */
 public final class BeaconPayments {
 
-    public static final int ITEMS_PER_PAGE = 3; // huecos entre los separadores de la pestaña
+    // =========================================================================
+    // Constants
+    // =========================================================================
+
+    public static final int ITEMS_PER_PAGE = 3; // slots between the separators of the tab
 
     private static final List<Item> GEMS = List.of(Items.DIAMOND, Items.EMERALD);
     private static final List<Item> INGOTS = List.of(Items.NETHERITE_INGOT, Items.GOLD_INGOT, Items.IRON_INGOT);
 
     private BeaconPayments() {}
 
-    /** Todos los pagos en orden: gemas, lingotes, otros. */
+    // =========================================================================
+    // Public API
+    // =========================================================================
+
+    /** All payments in order: gems, ingots, others. */
     public static List<Item> ordered() {
         List<Item> result = new ArrayList<>();
         for (List<Item> group : groups()) result.addAll(group);
@@ -37,8 +45,8 @@ public final class BeaconPayments {
     }
 
     /**
-     * Páginas de 3 para la pestaña de minerales. Cada grupo se reparte por separado,
-     * así una página nunca mezcla gemas con lingotes.
+     * Pages of 3 for the minerals tab. Each group is split separately,
+     * so a page never mixes gems with ingots.
      */
     public static List<List<Item>> pages() {
         List<List<Item>> pages = new ArrayList<>();
@@ -50,17 +58,21 @@ public final class BeaconPayments {
         return pages;
     }
 
+    // =========================================================================
+    // Helpers
+    // =========================================================================
+
     private static List<List<Item>> groups() {
         List<Item> gems = new ArrayList<>();
         List<Item> ingots = new ArrayList<>();
         List<Item> others = new ArrayList<>();
 
-        // Primero los conocidos, en su orden
+        // Known items first, in their order
         for (Item item : GEMS) addIfPayment(gems, item);
         addIfPayment(gems, ModItems.RUBY.get());
         for (Item item : INGOTS) addIfPayment(ingots, item);
 
-        // Después los de otros mods, según sus tags
+        // Then items from other mods, based on their tags
         for (Item item : BuiltInRegistries.ITEM) {
             if (!isPayment(item) || gems.contains(item) || ingots.contains(item)) continue;
             ItemStack stack = new ItemStack(item);

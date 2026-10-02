@@ -13,8 +13,12 @@ import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.BiomeModifiers;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
+/**
+ * In which biomes each ruby ore layer appears.
+ * (Vein shape: ModConfiguredFeatures | veins per chunk and height: ModPlacedFeatures)
+ */
 public class ModBiomeModifiers {
-    // En qué biomas aparece cada capa de rubí
+
     public static final ResourceKey<BiomeModifier> ADD_RUBY_ORE = registerKey("add_ruby_ore");
     public static final ResourceKey<BiomeModifier> ADD_MOUNTAIN_RUBY_ORE = registerKey("add_mountain_ruby_ore");
     public static final ResourceKey<BiomeModifier> ADD_DAPPLED_RUBY_ORE = registerKey("add_dappled_ruby_ore");
@@ -23,14 +27,14 @@ public class ModBiomeModifiers {
         var placedFeatures = context.lookup(Registries.PLACED_FEATURE);
         var biomes = context.lookup(Registries.BIOME);
 
-        // 1. TODOS LOS BIOMAS del Overworld
+        // 1. ALL Overworld BIOMES
         context.register(ADD_RUBY_ORE, new BiomeModifiers.AddFeaturesBiomeModifier(
                 biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                 HolderSet.direct(placedFeatures.getOrThrow(ModPlacedFeatures.RUBY_ORE_PLACED_KEY)),
                 GenerationStep.Decoration.UNDERGROUND_ORES
         ));
 
-        // 2. MONTAÑAS: los mismos 10 biomas donde vanilla 26.3 pone esmeralda extra
+        // 2. MOUNTAINS: the same 10 biomes where vanilla 26.3 adds extra emerald
         context.register(ADD_MOUNTAIN_RUBY_ORE, new BiomeModifiers.AddFeaturesBiomeModifier(
                 HolderSet.direct(
                         biomes.getOrThrow(Biomes.JAGGED_PEAKS),
@@ -48,7 +52,7 @@ public class ModBiomeModifiers {
                 GenerationStep.Decoration.UNDERGROUND_ORES
         ));
 
-        // 3. DAPPLED FOREST (bioma nuevo de la 26.x)
+        // 3. DAPPLED FOREST (new biome in 26.x)
         context.register(ADD_DAPPLED_RUBY_ORE, new BiomeModifiers.AddFeaturesBiomeModifier(
                 HolderSet.direct(biomes.getOrThrow(Biomes.DAPPLED_FOREST)),
                 HolderSet.direct(placedFeatures.getOrThrow(ModPlacedFeatures.DAPPLED_RUBY_ORE_PLACED_KEY)),
