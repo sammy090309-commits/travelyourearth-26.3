@@ -1,8 +1,8 @@
-# Metadata principal
+# Main metadata
 license = "${mod_license}"
-issueTrackerURL = "https://github.com/sammy090309-commits/travelyourearth-26.2-V1"
+issueTrackerURL = "https://github.com/sammy090309-commits/travelyourearth-26.3/issues"
 
-# Configuración del Mod
+# Mod
 [[mods]]
 modId = "${mod_id}"
 version = "${mod_version}"
@@ -20,14 +20,13 @@ A mod that expands the content of the discontinued Minecraft Earth game in a van
 [[mixins]]
 config = "${mod_id}.mixins.json"
 
-# Dependencias
+# Dependencies
 [[dependencies.${mod_id}]]
 modId = "neoforge"
 type = "required"
 versionRange = "[${neo_version},)"
-# CAMBIO: cargar DESPUÉS de NeoForge para que nuestras definiciones de armaduras
-# vanilla (con el trim de rubí) tengan prioridad sobre las de NeoForge,
-# que en la 26.3 beta no dibujan trims (TODO 26.3 en su TrimmedArmorModel).
+# Load AFTER NeoForge so our vanilla armor item definitions (with the ruby trim)
+# take priority over NeoForge's resources.
 ordering = "AFTER"
 side = "BOTH"
 

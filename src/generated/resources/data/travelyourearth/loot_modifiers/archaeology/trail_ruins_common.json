@@ -1,6 +1,6 @@
 {
   "type": "travelyourearth:replace_with_item",
-  "chance": 0.044,
+  "chance": 0.034301605,
   "condition": {
     "type": "neoforge:loot_table_id",
     "loot_table_id": "minecraft:archaeology/trail_ruins_common"

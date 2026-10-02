@@ -3,7 +3,7 @@
     {
       "condition": {
         "type": "minecraft:random_chance",
-        "chance": 0.0915
+        "chance": 0.0213
       },
       "entries": [
         {

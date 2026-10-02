@@ -1,6 +1,6 @@
 {
   "type": "travelyourearth:replace_with_item",
-  "chance": 0.133,
+  "chance": 0.096363775,
   "condition": {
     "type": "neoforge:loot_table_id",
     "loot_table_id": "minecraft:archaeology/ocean_ruin_cold"

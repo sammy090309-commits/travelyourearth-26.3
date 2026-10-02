@@ -24,7 +24,9 @@ sourceSets.main.resources {
     // Exclude common development only resources from finalized outputs
     exclude("**/*.bbmodel") // BlockBench project files
 
-    exclude("src/generated/**/.cache") // datagen cache files
+    // Datagen cache files. Patterns are relative to each resource folder,
+    // so the .cache folder is at the root of src/generated/resources.
+    exclude(".cache/**")
 }
 
 repositories {
@@ -35,7 +37,7 @@ base {
     archivesName = mod_id
 }
 
-// Mojang ships Java 25 to end users in 26.2, so mods should target Java 25.
+// Mojang ships Java 25 to end users in 26.3, so mods should target Java 25.
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 neoForge {
