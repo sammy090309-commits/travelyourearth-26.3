@@ -1,0 +1,76 @@
+name: Bug report
+description: Something in Travel Your Earth isn't working as expected
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve **Travel Your Earth**! 🌍
+        Please fill in as much as you can, it helps a lot to fix the bug faster.
+
+  - type: input
+    id: mod-version
+    attributes:
+      label: Mod version
+      description: You can see it in Mods -> Travel Your Earth.
+      placeholder: "1.1.0-beta - 26.3"
+    validations:
+      required: true
+
+  - type: input
+    id: neoforge-version
+    attributes:
+      label: NeoForge version
+      placeholder: "26.3.0.41-beta"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: side
+    attributes:
+      label: Where does it happen?
+      options:
+        - Singleplayer
+        - Multiplayer server
+        - Both
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the bug. Screenshots or videos are very welcome.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: How can I reproduce it?
+      placeholder: |
+        1. Put on the ruby chestplate
+        2. Walk into lava
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+
+  - type: textarea
+    id: other-mods
+    attributes:
+      label: Other mods installed
+      description: List them, or write "none" if you only use Travel Your Earth.
+
+  - type: textarea
+    id: log
+    attributes:
+      label: Log or crash report
+      description: |
+        Upload logs/latest.log or the crash report from crash-reports/ (drag the file here),
+        or paste it on https://mclo.gs and share the link.
