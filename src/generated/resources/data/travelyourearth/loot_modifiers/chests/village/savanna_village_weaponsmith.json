@@ -1,0 +1,9 @@
+{
+  "type": "travelyourearth:savanna_village_chest",
+  "condition": {
+    "type": "neoforge:loot_table_id",
+    "loot_table_id": "minecraft:chests/village/village_weaponsmith"
+  },
+  "gear_chance": 0.385,
+  "ruby_chance": 0.82500005
+}

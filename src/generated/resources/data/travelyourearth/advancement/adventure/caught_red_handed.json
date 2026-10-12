@@ -1,0 +1,32 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "travelyourearth:advancement_tab",
+      "enabled": false
+    }
+  ],
+  "parent": "travelyourearth:adventure/wanna_buy",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.travelyourearth.caught_red_handed.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "id": "minecraft:oak_boat"
+    },
+    "title": {
+      "translate": "advancements.travelyourearth.caught_red_handed.title"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

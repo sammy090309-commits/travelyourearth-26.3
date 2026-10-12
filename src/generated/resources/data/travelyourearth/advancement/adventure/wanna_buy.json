@@ -1,0 +1,31 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "travelyourearth:advancement_tab",
+      "enabled": false
+    }
+  ],
+  "parent": "travelyourearth:adventure/obtain_ruby",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.travelyourearth.wanna_buy.description"
+    },
+    "icon": {
+      "id": "travelyourearth:ruby_block"
+    },
+    "title": {
+      "translate": "advancements.travelyourearth.wanna_buy.title"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

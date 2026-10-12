@@ -1,0 +1,32 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "travelyourearth:advancement_tab",
+      "enabled": true
+    }
+  ],
+  "parent": "travelyourearth:ruby/wanna_buy",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.travelyourearth.viva_la_revolucion.description"
+    },
+    "hidden": true,
+    "icon": {
+      "id": "travelyourearth:rebellion_banner_pattern"
+    },
+    "title": {
+      "translate": "advancements.travelyourearth.viva_la_revolucion.title"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

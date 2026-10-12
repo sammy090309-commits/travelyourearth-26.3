@@ -1,0 +1,46 @@
+name: Feedback
+description: Tell us what you think about Travel Your Earth, or share an idea
+title: "[Feedback] "
+labels: ["feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for playing **Travel Your Earth**! 🌍💎
+        Every opinion helps to make the mod better. Spanish or English, both are welcome.
+        Tip: you can also send feedback from inside the game (Mods -> Travel Your Earth -> Config -> Feedback).
+
+  # "input" (not a dropdown) so the in-game form can fill it in by itself
+  - type: input
+    id: rating
+    attributes:
+      label: How much do you like the mod?
+      description: From 1 to 5 stars
+      placeholder: "★★★★★ (5/5)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: liked
+    attributes:
+      label: What did you like the most?
+      placeholder: "The illegal villagers, the ruby armor, the config menu..."
+
+  - type: textarea
+    id: improve
+    attributes:
+      label: What would you change or improve?
+      placeholder: "Something too hard, too easy, confusing..."
+
+  - type: textarea
+    id: ideas
+    attributes:
+      label: Ideas for the future
+      description: New mobs, items, features from Minecraft Earth... anything!
+
+  - type: input
+    id: mod-version
+    attributes:
+      label: Mod version (optional)
+      description: You can see it in Mods -> Travel Your Earth.
+      placeholder: "1.2.0-beta - 26.3"

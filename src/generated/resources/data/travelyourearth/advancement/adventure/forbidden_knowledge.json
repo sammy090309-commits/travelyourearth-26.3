@@ -1,0 +1,48 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "travelyourearth:advancement_tab",
+      "enabled": false
+    }
+  ],
+  "parent": "travelyourearth:adventure/wanna_buy",
+  "criteria": {
+    "banishment_book": {
+      "trigger": "minecraft:impossible"
+    },
+    "cowardice_book": {
+      "trigger": "minecraft:impossible"
+    },
+    "harpoon_book": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.travelyourearth.forbidden_knowledge.description"
+    },
+    "frame": "challenge",
+    "hidden": true,
+    "icon": {
+      "id": "minecraft:enchanted_book"
+    },
+    "title": {
+      "translate": "advancements.travelyourearth.forbidden_knowledge.title"
+    }
+  },
+  "requirements": [
+    [
+      "banishment_book"
+    ],
+    [
+      "harpoon_book"
+    ],
+    [
+      "cowardice_book"
+    ]
+  ],
+  "rewards": {
+    "experience": 100
+  },
+  "sends_telemetry_event": true
+}
