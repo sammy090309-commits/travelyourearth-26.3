@@ -3,6 +3,7 @@ package com.sam_mc.travelyourearth.loot;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.sam_mc.travelyourearth.enchantment.ModEnchantments;
 import com.sam_mc.travelyourearth.item.ModItems;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -10,11 +11,14 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.equipment.trim.ArmorTrim;
 import net.minecraft.world.item.equipment.trim.TrimMaterials;
 import net.minecraft.world.item.equipment.trim.TrimPatterns;
@@ -42,6 +46,16 @@ public class RubyTrialGearLootModifier extends LootModifier {
 
     private final float armorChance;
     private final float weaponChance;
+
+    /**
+     * 1.2: chance of ANY chestplate (iron, diamond or ruby) coming with Cowardice, and of the ruby
+     * spear coming with Harpoon (30%).
+     */
+    private static final float SPECIAL_ENCHANT_CHANCE = 0.30F;
+
+    /** Fixed levels, like vanilla's trial gear (always Protection IV...): Cowardice III, Harpoon II. */
+    private static final int COWARDICE_LEVEL = 3;
+    private static final int HARPOON_LEVEL = 2;
 
     // 26.3: same change as in LootModifier / ReplaceWithItemLootModifier -
     // a single optional condition wrapped in a Holder, instead of an array.
@@ -84,6 +98,13 @@ public class RubyTrialGearLootModifier extends LootModifier {
             }
         }
 
+        // 1b) COWARDICE: ANY chestplate (iron, diamond or ruby), same chance for all of them
+        for (ItemStack stack : loot) {
+            if (armorSlotOf(stack) == EquipmentSlot.CHEST && random.nextFloat() < SPECIAL_ENCHANT_CHANCE) {
+                addModEnchantment(stack, ModEnchantments.COWARDICE, COWARDICE_LEVEL, context.getLevel().registryAccess());
+            }
+        }
+
         // 2) MELEE WEAPON: the vanilla sword becomes a ruby axe or spear, keeping its enchantments
         if (weaponChance > 0.0F && random.nextFloat() < weaponChance) {
             for (int i = 0; i < loot.size(); i++) {
@@ -97,6 +118,11 @@ public class RubyTrialGearLootModifier extends LootModifier {
                     if (enchantments != null && !enchantments.isEmpty()) {
                         rubyWeapon.set(DataComponents.ENCHANTMENTS, enchantments);
                     }
+                    // Harpoon pulls, Knockback pushes: a spear that kept vanilla's Knockback I never gets Harpoon
+                    if (rubyItem == ModItems.RUBY_SPEAR.get() && !hasEnchantment(rubyWeapon, Enchantments.KNOCKBACK)
+                            && random.nextFloat() < SPECIAL_ENCHANT_CHANCE) {
+                        addModEnchantment(rubyWeapon, ModEnchantments.HARPOON, HARPOON_LEVEL, context.getLevel().registryAccess());
+                    }
 
                     loot.set(i, rubyWeapon);
                     break;
@@ -109,6 +135,18 @@ public class RubyTrialGearLootModifier extends LootModifier {
     // =========================================================================
     // Helpers
     // =========================================================================
+
+    /** Adds one of the mod's enchantments at a fixed level, keeping the others. */
+    private static void addModEnchantment(ItemStack stack, ResourceKey<Enchantment> key, int level,
+                                          RegistryAccess registries) {
+        registries.lookupOrThrow(Registries.ENCHANTMENT).get(key)
+                .ifPresent(enchantment -> stack.enchant(enchantment, level));
+    }
+
+    /** True if the item already has this enchantment (any level). */
+    private static boolean hasEnchantment(ItemStack stack, ResourceKey<Enchantment> key) {
+        return stack.getEnchantments().keySet().stream().anyMatch(holder -> holder.is(key));
+    }
 
     private static ItemStack toRubyArmor(ItemStack original, EquipmentSlot slot, RegistryAccess registries) {
         ItemStack ruby = new ItemStack(rubyArmorFor(slot));

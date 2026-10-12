@@ -8,13 +8,14 @@ body:
       value: |
         Thanks for helping improve **Travel Your Earth**! 🌍
         Please fill in as much as you can, it helps a lot to fix the bug faster.
+        Tip: you can also report bugs from inside the game (Mods -> Travel Your Earth -> Config -> Report bugs).
 
   - type: input
     id: mod-version
     attributes:
       label: Mod version
       description: You can see it in Mods -> Travel Your Earth.
-      placeholder: "1.1.0-beta - 26.3"
+      placeholder: "1.2.0-beta - 26.3"
     validations:
       required: true
 
@@ -26,14 +27,13 @@ body:
     validations:
       required: true
 
-  - type: dropdown
+  # "input" (not a dropdown) so the in-game form can fill it in by itself
+  - type: input
     id: side
     attributes:
       label: Where does it happen?
-      options:
-        - Singleplayer
-        - Multiplayer server
-        - Both
+      description: Singleplayer, Multiplayer server or Both
+      placeholder: "Singleplayer"
     validations:
       required: true
 
@@ -74,3 +74,10 @@ body:
       description: |
         Upload logs/latest.log or the crash report from crash-reports/ (drag the file here),
         or paste it on https://mclo.gs and share the link.
+
+  - type: input
+    id: rating
+    attributes:
+      label: How was your experience with the mod? (optional)
+      description: From 1 to 5 stars
+      placeholder: "★★★★☆ (4/5)"

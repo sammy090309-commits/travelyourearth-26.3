@@ -1,10 +1,25 @@
 package com.sam_mc.travelyourearth;
 
+import com.sam_mc.travelyourearth.attachment.ModAttachments;
 import com.sam_mc.travelyourearth.block.ModBlocks;
 import com.sam_mc.travelyourearth.condition.ModConditions;
+import com.sam_mc.travelyourearth.config.IllegalVillagerConfig;
+import com.sam_mc.travelyourearth.enchantment.ModEnchantments;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.EnchantmentInstance;
+import net.minecraft.world.item.enchantment.Enchantments;
+import java.util.Optional;
 import com.sam_mc.travelyourearth.item.ModCreativeModTabs;
 import com.sam_mc.travelyourearth.item.ModItems;
 import com.sam_mc.travelyourearth.loot.ModLootModifiers;
+import com.sam_mc.travelyourearth.map.ModMapDecorations;
+import com.sam_mc.travelyourearth.particle.ModParticles;
+import com.sam_mc.travelyourearth.potion.ModPotions;
 import com.sam_mc.travelyourearth.sound.ModSounds;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -53,6 +68,10 @@ public class TravelYourEarth {
         ModLootModifiers.register(modEventBus);
         ModSounds.register(modEventBus);            // mod sounds
         ModConditions.register(modEventBus);        // data conditions (advancement tab option)
+        ModAttachments.register(modEventBus);       // data attachments (illegal villagers, 1.2)
+        ModMapDecorations.register(modEventBus);    // map icons (Trail Ruins map, 1.2)
+        ModPotions.register(modEventBus);           // potions (Potion of Decay)
+        ModParticles.register(modEventBus);         // particles (golden_spark of Cowardice)
 
         NeoForge.EVENT_BUS.register(this);
 
@@ -63,6 +82,9 @@ public class TravelYourEarth {
         modContainer.registerConfig(ModConfig.Type.CLIENT, Config.SPEC);
         // Local config (formerly COMMON; renamed to LOCAL in NeoForge 26.3.0.37-beta)
         modContainer.registerConfig(ModConfig.Type.LOCAL, Config.COMMON_SPEC);
+        // Illegal villagers config (config/travelyourearth-illegal.toml).
+        // Its own file name, so it doesn't clash with the other LOCAL config
+        modContainer.registerConfig(ModConfig.Type.LOCAL, IllegalVillagerConfig.SPEC, "travelyourearth-illegal.toml");
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
@@ -212,6 +234,21 @@ public class TravelYourEarth {
             );
         }
 
+        // --- Ingredients: enchanted books next to their vanilla "siblings" ---
+        // Banishment after Smite, Harpoon after Lunge, Cowardice after Protection
+        if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
+            placeBookAfter(event, Enchantments.SMITE, ModEnchantments.BANISHMENT);
+            placeBookAfter(event, Enchantments.LUNGE, ModEnchantments.HARPOON);
+            placeBookAfter(event, Enchantments.PROTECTION, ModEnchantments.COWARDICE);
+        }
+
+        // --- Ingredients: Rebellion banner pattern after the last vanilla pattern (Guster) ---
+        if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
+            safeInsertAfter(event, new ItemStack(Items.GUSTER_BANNER_PATTERN),
+                    new ItemStack(ModItems.REBELLION_BANNER_PATTERN.get()),
+                    CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+        }
+
         // --- Colored blocks: hardened glass after tinted glass ---
         if (event.getTabKey() == CreativeModeTabs.COLORED_BLOCKS) {
             event.insertAfter(
@@ -220,6 +257,55 @@ public class TravelYourEarth {
                     CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS
             );
         }
+    }
+
+    /**
+     * Moves the enchanted books of one of our enchantments right after the books of a vanilla one.
+     * Vanilla already adds our books at the END of the Ingredients tab (max level in the tab,
+     * every level in the search tab), so we remove them and insert them in the right place.
+     */
+    private static void placeBookAfter(BuildCreativeModeTabContentsEvent event,
+                                       ResourceKey<Enchantment> vanillaKey, ResourceKey<Enchantment> ourKey) {
+        HolderLookup.RegistryLookup<Enchantment> enchantments =
+                event.getParameters().holders().lookupOrThrow(Registries.ENCHANTMENT);
+        Optional<Holder.Reference<Enchantment>> vanilla = enchantments.get(vanillaKey);
+        Optional<Holder.Reference<Enchantment>> ours = enchantments.get(ourKey);
+        if (vanilla.isEmpty() || ours.isEmpty()) return;
+
+        // 1) Remove the books vanilla added at the end
+        event.removeIf(stack -> stack.is(Items.ENCHANTED_BOOK)
+                        && EnchantmentHelper.getEnchantmentsForCrafting(stack).getLevel(ours.get()) > 0,
+                CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+
+        int vanillaMax = vanilla.get().value().getMaxLevel();
+        int ourMax = ours.get().value().getMaxLevel();
+        ItemStack vanillaMaxBook = book(vanilla.get(), vanillaMax);
+
+        // 2) Tab: only the max level, right after the vanilla max level book (like vanilla does)
+        safeInsertAfter(event, vanillaMaxBook, book(ours.get(), ourMax), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+
+        // 3) Search tab: every level (I, II, III...) after the last vanilla level
+        ItemStack previous = vanillaMaxBook;
+        for (int level = 1; level <= ourMax; level++) {
+            ItemStack next = book(ours.get(), level);
+            safeInsertAfter(event, previous, next, CreativeModeTab.TabVisibility.SEARCH_TAB_ONLY);
+            previous = next;
+        }
+    }
+
+    /** insertAfter, but if the vanilla item isn't found, ours goes at the end instead of crashing the game. */
+    private static void safeInsertAfter(BuildCreativeModeTabContentsEvent event, ItemStack existing,
+                                        ItemStack newEntry, CreativeModeTab.TabVisibility visibility) {
+        try {
+            event.insertAfter(existing, newEntry, visibility);
+        } catch (RuntimeException e) {
+            LOGGER.warn("Couldn't place {} after {} in the creative tab, adding it at the end", newEntry, existing);
+            event.accept(newEntry, visibility);
+        }
+    }
+
+    private static ItemStack book(Holder<Enchantment> enchantment, int level) {
+        return EnchantmentHelper.createBook(new EnchantmentInstance(enchantment, level));
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call

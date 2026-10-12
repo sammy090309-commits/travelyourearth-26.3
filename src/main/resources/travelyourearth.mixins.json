@@ -3,12 +3,17 @@
   "package": "com.sam_mc.travelyourearth.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "SmithingTemplateItemMixin"
+    "SmithingTemplateItemMixin",
+    "ShowTradesToPlayerMixin",
+    "VillagerMixin",
+    "VillagerHostilesSensorMixin",
+    "IllegalNoHeroMixin"
   ],
   "client": [
     "BeaconScreenMixin",
     "AbstractContainerScreenAccessorMixin",
-    "AdvancementTabMixin"
+    "AdvancementTabMixin",
+    "MerchantScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

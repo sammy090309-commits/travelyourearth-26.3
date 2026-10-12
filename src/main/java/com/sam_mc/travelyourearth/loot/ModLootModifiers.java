@@ -26,6 +26,11 @@ public class ModLootModifiers {
     public static final Supplier<MapCodec<? extends IGlobalLootModifier>> RUBY_TRIAL_GEAR =
             LOOT_MODIFIERS.register("ruby_trial_gear", () -> RubyTrialGearLootModifier.CODEC);
 
+    /** travelyourearth:savanna_village_chest -> savanna village chests: diamond -> ruby,
+     *  rubies at 1/4 of the emerald chance (SavannaVillageChestModifier) */
+    public static final Supplier<MapCodec<? extends IGlobalLootModifier>> SAVANNA_VILLAGE_CHEST =
+            LOOT_MODIFIERS.register("savanna_village_chest", () -> SavannaVillageChestModifier.CODEC);
+
     public static void register(IEventBus eventBus) {
         LOOT_MODIFIERS.register(eventBus);
     }

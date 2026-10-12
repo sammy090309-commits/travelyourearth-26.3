@@ -4,6 +4,7 @@ import com.sam_mc.travelyourearth.TravelYourEarth;
 import com.sam_mc.travelyourearth.item.ModItems;
 import com.sam_mc.travelyourearth.loot.ReplaceWithItemLootModifier;
 import com.sam_mc.travelyourearth.loot.RubyTrialGearLootModifier;
+import com.sam_mc.travelyourearth.loot.SavannaVillageChestModifier;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -16,6 +17,7 @@ import net.neoforged.neoforge.common.data.GlobalLootModifierProvider;
 import net.neoforged.neoforge.common.loot.AddTableLootModifier;
 import net.neoforged.neoforge.common.loot.LootTableIdCondition;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -25,6 +27,7 @@ import java.util.concurrent.CompletableFuture;
  *   1-3. Chests, vaults and decorated pots  -> extra tables from ModExtraLootProvider
  *   4.   Archaeology                         -> replaces the item of the suspicious block
  *   5.   Equipment                           -> ruby gear for ominous trial chamber mobs
+ *   6.   Savanna village chests              -> diamond -> ruby, extra rubies, ruby gear (rarer than iron)
  */
 public class ModGlobalLootModifierProvider extends GlobalLootModifierProvider {
 
@@ -35,10 +38,10 @@ public class ModGlobalLootModifierProvider extends GlobalLootModifierProvider {
     // Since the ruby REPLACES the item, the other items (emerald included) drop a little.
     // relativeToEmerald() takes that into account, so the FINAL ruby chance follows the rule exactly.
 
-    /** Same chance as the emerald (table where every item has the same chance). */
+    /** Same chance as the emerald (table where every item has the same chance). NOT boosted (repeated chance). */
     private static final float SAME_AS_EMERALD = 1.0f;
-    /** Table with emerald only: 0.8x the emerald (same rule as ModExtraLootProvider). */
-    private static final float EMERALD_ONLY = 0.8f;
+    /** Table with emerald only: 0.8x the emerald (same rule as ModExtraLootProvider), x1.1 since 1.2. */
+    private static final float EMERALD_ONLY = 0.8f * ModExtraLootProvider.LOOT_BOOST;
 
     /**
      * Replacement chance so that, after replacing, ruby = factor x (the emerald that is left).
@@ -77,20 +80,54 @@ public class ModGlobalLootModifierProvider extends GlobalLootModifierProvider {
 
         // Emerald only -> ruby = 0.8x emerald
         addReplacement("archaeology/desert_well",        "archaeology/desert_well",
-                ModItems.RUBY.get(), relativeToEmerald(0.125f, EMERALD_ONLY));      // 9.1%  (emerald 12.5%)
+                ModItems.RUBY.get(), relativeToEmerald(0.125f, EMERALD_ONLY));      // 9.9%  (emerald 12.5%)
         addReplacement("archaeology/ocean_ruin_warm",    "archaeology/ocean_ruin_warm",
-                ModItems.RUBY.get(), relativeToEmerald(0.1333f, EMERALD_ONLY));     // 9.6%  (emerald 13.3%)
+                ModItems.RUBY.get(), relativeToEmerald(0.1333f, EMERALD_ONLY));     // 10.5% (emerald 13.3%)
         addReplacement("archaeology/ocean_ruin_cold",    "archaeology/ocean_ruin_cold",
-                ModItems.RUBY.get(), relativeToEmerald(0.1333f, EMERALD_ONLY));     // 9.6%  (emerald 13.3%)
+                ModItems.RUBY.get(), relativeToEmerald(0.1333f, EMERALD_ONLY));     // 10.5% (emerald 13.3%)
         addReplacement("archaeology/trail_ruins_common", "archaeology/trail_ruins_common",
-                ModItems.RUBY.get(), relativeToEmerald(0.0444f, EMERALD_ONLY));     // 3.4%  (emerald 4.4%)
+                ModItems.RUBY.get(), relativeToEmerald(0.0444f, EMERALD_ONLY));     // 3.8%  (emerald 4.4%)
 
         // =====================================================================
         // 5. EQUIPMENT (ominous trial chamber mobs; unchanged)
         // =====================================================================
         addRubyTrialGear("ruby_gear_ominous_melee",  "equipment/trial_chamber_melee",  0.125F, 0.2222F);
         addRubyTrialGear("ruby_gear_ominous_ranged", "equipment/trial_chamber_ranged", 0.125F, 0.0F);
+
+        // =====================================================================
+        // 6. SAVANNA VILLAGE CHESTS ("the country of the ruby")
+        // =====================================================================
+        // Hooks into the profession chests (weaponsmith, toolsmith...), but the modifier itself checks
+        // that the chest is REALLY inside a savanna village. In other villages nothing changes.
+        // (The savanna HOUSE has its own independent ruby table: ModExtraLootProvider.)
+        for (String table : VILLAGE_CHESTS) {
+            this.add("chests/village/savanna_" + table, new SavannaVillageChestModifier(
+                    condition("chests/village/" + table),
+                    1000,
+                    SAVANNA_RUBY_CHANCE,
+                    SAVANNA_GEAR_CHANCE));
+        }
     }
+
+    // =========================================================================
+    // SAVANNA VILLAGES
+    // =========================================================================
+
+    /** Rubies very common: 75% chance per emerald stack (was 1/4, then 1/3). */
+    private static final float SAVANNA_RUBY_CHANCE = 0.75F * ModExtraLootProvider.LOOT_BOOST;  // 82.5%
+
+    /** Ruby gear "like the iron, but rarer": 35% chance per iron gear piece in the chest. */
+    private static final float SAVANNA_GEAR_CHANCE = 0.35F * ModExtraLootProvider.LOOT_BOOST;  // 38.5%
+
+    /**
+     * Vanilla village chest tables (inside chests/village/) shared by every village type.
+     * Left out: the houses of the other village types, and "village_savanna_house", which has its
+     * own independent ruby table in ModExtraLootProvider (SAVANNA_HOUSE_RUBY).
+     */
+    private static final List<String> VILLAGE_CHESTS = List.of(
+            "village_armorer", "village_butcher", "village_cartographer", "village_fisher",
+            "village_fletcher", "village_mason", "village_shepherd", "village_tannery",
+            "village_temple", "village_toolsmith", "village_weaponsmith");
 
     // =========================================================================
     // HELPERS

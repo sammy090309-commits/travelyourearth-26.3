@@ -3,14 +3,28 @@ package com.sam_mc.travelyourearth.item;
 import com.sam_mc.travelyourearth.Config;
 import com.sam_mc.travelyourearth.TravelYourEarth;
 import com.sam_mc.travelyourearth.block.ModBlocks;
+import com.sam_mc.travelyourearth.enchantment.ModEnchantments;
+import com.sam_mc.travelyourearth.potion.ModPotions;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
+
+import java.util.List;
 
 /**
  * "Travel Your Earth" creative tab.
@@ -56,6 +70,31 @@ public class ModCreativeModTabs {
                         output.accept(ModItems.RUBY_BOOTS.get());
                         output.accept(ModItems.RUBY_HORSE_ARMOR.get());
                         output.accept(ModItems.RUBY_NAUTILUS_ARMOR.get());
+
+                        // ===== 1.2 =====
+
+                        // Banner pattern
+                        output.accept(ModItems.REBELLION_BANNER_PATTERN.get());
+
+                        // Enchanted books: every level (I, II, III...) of each enchantment
+                        HolderLookup.RegistryLookup<Enchantment> enchantments =
+                                parameters.holders().lookupOrThrow(Registries.ENCHANTMENT);
+                        for (ResourceKey<Enchantment> key : List.of(
+                                ModEnchantments.BANISHMENT, ModEnchantments.HARPOON, ModEnchantments.COWARDICE)) {
+                            enchantments.get(key).ifPresent(enchantment -> {
+                                for (int level = 1; level <= enchantment.value().getMaxLevel(); level++) {
+                                    output.accept(EnchantmentHelper.createBook(new EnchantmentInstance(enchantment, level)));
+                                }
+                            });
+                        }
+
+                        // Potions of Decay: drinkable, splash, lingering and arrows (normal, long, strong)
+                        List<Holder<Potion>> decay = List.of(ModPotions.DECAY, ModPotions.LONG_DECAY, ModPotions.STRONG_DECAY);
+                        for (Item container : List.of(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION, Items.TIPPED_ARROW)) {
+                            for (Holder<Potion> potion : decay) {
+                                output.accept(PotionContents.createItemStack(container, potion));
+                            }
+                        }
                     })
                     .build());
 

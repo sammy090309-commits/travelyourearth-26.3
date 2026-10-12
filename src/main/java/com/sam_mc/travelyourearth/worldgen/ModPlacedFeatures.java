@@ -19,48 +19,62 @@ import java.util.List;
  * How many ruby veins are attempted per chunk and at what height.
  * (Vein shape: ModConfiguredFeatures | biomes: ModBiomeModifiers)
  *
- * Vanilla reference (official wiki, Java):
- *   - Diamond: 4 batches (7 + 1/9 + 4 + 2 veins per chunk) below Y 16, size 4  -> about 26 ores/chunk
- *   - Iron: 90 + 10 + 10 veins per chunk                                        -> much more
+ * Vanilla reference (26.3 OrePlacements):
+ *   - Diamond: 7 + 2 + 4 (+1 every 9 chunks) veins below Y 16, many below the world -> ~3-4 ores/chunk
+ *   - Emerald (only mountains): 100 attempts, size 3, triangle Y -16..480, most in the air -> ~3 ores/chunk
+ *   - Gold extra (badlands): 50 attempts, size 9, uniform Y 32..256
+ *
+ * Ruby per chunk (approx., 1.2): savanna ~13 > dappled forest ~9-10 > mountains ~5-6 > anywhere ~0.5
  */
 public class ModPlacedFeatures {
 
     public static final ResourceKey<PlacedFeature> RUBY_ORE_PLACED_KEY = registerKey("ruby_ore_placed");
     public static final ResourceKey<PlacedFeature> MOUNTAIN_RUBY_ORE_PLACED_KEY = registerKey("mountain_ruby_ore_placed");
     public static final ResourceKey<PlacedFeature> DAPPLED_RUBY_ORE_PLACED_KEY = registerKey("dappled_ruby_ore_placed");
+    public static final ResourceKey<PlacedFeature> SAVANNA_RUBY_ORE_PLACED_KEY = registerKey("savanna_ruby_ore_placed");
 
     public static void bootstrap(BootstrapContext<PlacedFeature> context) {
         var configuredFeatures = context.lookup(Registries.FEATURE);
 
-        // 1. ALL BIOMES: much rarer than diamond.
+        // 1. ALL BIOMES: MUCH rarer than diamond (~0.5 ores/chunk, diamond ~3-4).
         // Same shape as the diamond main vein: triangle from Y -144 to Y 16
-        // (peak at Y -64, the bottom; nothing above Y 16), but only 4 veins instead of 7
-        // and without the other 3 diamond batches.
+        // (peak at Y -64, the bottom; half of it is below the world), but only
+        // ONE attempt every 2 chunks.
         register(context, RUBY_ORE_PLACED_KEY,
                 configuredFeatures.getOrThrow(ModConfiguredFeatures.RUBY_ORE_KEY),
-                OrePlacements.commonOrePlacement(4,
+                OrePlacements.rareOrePlacement(2,
                         HeightRangePlacement.triangle(
                                 VerticalAnchor.absolute(-144),
                                 VerticalAnchor.absolute(16))));
 
-        // 2. MOUNTAINS: added on top of the "all biomes" layer.
-        // 14 veins per chunk, triangle from Y -64 to Y 60 (peak at Y -2).
+        // 2. MOUNTAINS: like vanilla's emerald, but UPSIDE DOWN (deeper = more) and a bit more common.
+        // 3 attempts, triangle from Y -192 to Y 64 (peak at Y -64, the bottom of the world):
+        // half of them land below the world -> ~1.5 big veins, ~5-6 ores/chunk.
         register(context, MOUNTAIN_RUBY_ORE_PLACED_KEY,
                 configuredFeatures.getOrThrow(ModConfiguredFeatures.MOUNTAIN_RUBY_ORE_KEY),
-                OrePlacements.commonOrePlacement(14,
+                OrePlacements.commonOrePlacement(3,
                         HeightRangePlacement.triangle(
-                                VerticalAnchor.absolute(-64),
-                                VerticalAnchor.absolute(60))));
+                                VerticalAnchor.absolute(-192),
+                                VerticalAnchor.absolute(64))));
 
-        // 3. DAPPLED FOREST: added on top of the "all biomes" layer.
-        // 30 attempts per chunk, uniform from Y 12 to Y 256 (same chance at any height;
-        // attempts that land in the air don't place anything).
+        // 3. DAPPLED FOREST: like vanilla's gold in the badlands (same height: uniform Y 32..256,
+        // big veins of 9), but MUCH softer: 8 attempts instead of 50 (~9-10 ores/chunk).
+        // Attempts that land in the air don't place anything.
         register(context, DAPPLED_RUBY_ORE_PLACED_KEY,
                 configuredFeatures.getOrThrow(ModConfiguredFeatures.DAPPLED_RUBY_ORE_KEY),
-                OrePlacements.commonOrePlacement(30,
+                OrePlacements.commonOrePlacement(8,
                         HeightRangePlacement.uniform(
-                                VerticalAnchor.absolute(12),
+                                VerticalAnchor.absolute(32),
                                 VerticalAnchor.absolute(256))));
+
+        // 4. SAVANNAS: the best place for rubies (~13 ores/chunk). 25 attempts, triangle from
+        // Y 0 to Y 192 (peak at Y 96, just under the savanna's surface), so most of them hit stone.
+        register(context, SAVANNA_RUBY_ORE_PLACED_KEY,
+                configuredFeatures.getOrThrow(ModConfiguredFeatures.SAVANNA_RUBY_ORE_KEY),
+                OrePlacements.commonOrePlacement(25,
+                        HeightRangePlacement.triangle(
+                                VerticalAnchor.absolute(0),
+                                VerticalAnchor.absolute(192))));
     }
 
     private static ResourceKey<PlacedFeature> registerKey(String name) {

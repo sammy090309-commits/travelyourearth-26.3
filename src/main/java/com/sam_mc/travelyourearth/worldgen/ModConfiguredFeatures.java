@@ -26,6 +26,7 @@ public class ModConfiguredFeatures {
     public static final ResourceKey<Feature> RUBY_ORE_KEY = registerKey("ruby_ore");
     public static final ResourceKey<Feature> MOUNTAIN_RUBY_ORE_KEY = registerKey("mountain_ruby_ore");
     public static final ResourceKey<Feature> DAPPLED_RUBY_ORE_KEY = registerKey("dappled_ruby_ore");
+    public static final ResourceKey<Feature> SAVANNA_RUBY_ORE_KEY = registerKey("savanna_ruby_ore");
 
     public static void bootstrap(BootstrapContext<Feature> context) {
         RuleTest stoneReplaceables = new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES);
@@ -37,14 +38,18 @@ public class ModConfiguredFeatures {
                 new BlockReplacement(deepslateReplaceables, ModBlocks.DEEPSLATE_RUBY_ORE.get().defaultBlockState())
         );
 
-        // 1. ALL BIOMES: size 5 (a bit bigger than the diamond's 4), 50% discard when touching air.
-        context.register(RUBY_ORE_KEY, new OreFeature(rubyTargets, 5, 0.5f));
+        // 1. ALL BIOMES: size 4 (same as the diamond's), 50% discard when touching air.
+        context.register(RUBY_ORE_KEY, new OreFeature(rubyTargets, 4, 0.5f));
 
         // 2. MOUNTAINS: size 8 (twice the diamond's 4), 30% discard when touching air.
         context.register(MOUNTAIN_RUBY_ORE_KEY, new OreFeature(rubyTargets, 8, 0.3f));
 
-        // 3. DAPPLED FOREST: size 3 (small veins), no discard.
-        context.register(DAPPLED_RUBY_ORE_KEY, new OreFeature(rubyTargets, 3));
+        // 3. DAPPLED FOREST: big veins like vanilla's gold in the badlands ("ore_gold": size 9, no discard).
+        context.register(DAPPLED_RUBY_ORE_KEY, new OreFeature(rubyTargets, 9));
+
+        // 4. SAVANNAS: small veins like vanilla's emerald ore in the mountains
+        //    (vanilla "ore_emerald": size 3, no discard).
+        context.register(SAVANNA_RUBY_ORE_KEY, new OreFeature(rubyTargets, 3));
     }
 
     public static ResourceKey<Feature> registerKey(String name) {

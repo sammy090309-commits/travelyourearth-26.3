@@ -5,15 +5,26 @@ import com.sam_mc.travelyourearth.block.ModBlocks;
 import com.sam_mc.travelyourearth.item.ModItems;
 import com.sam_mc.travelyourearth.tags.ModTags;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagBuilder;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ItemTagsProvider;
 
 import java.util.concurrent.CompletableFuture;
 
-/** Generates the item tags of the mod (mod tags + vanilla tags + common "c:" tags). */
+/**
+ * Generates the item tags of the mod (mod tags + vanilla tags + common "c:" tags).
+ *
+ * 26.3: uses the "raw builder" (getOrCreateRawBuilder + addElement), the same way as
+ * ModEnchantmentTagsProvider. It writes the item ids directly, so it doesn't depend on
+ * what tag(...).add(...) expects in this NeoForge version.
+ */
 public class ModItemTagsProvider extends ItemTagsProvider {
 
     public ModItemTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
@@ -26,92 +37,90 @@ public class ModItemTagsProvider extends ItemTagsProvider {
         // =====================================================================
         // MOD
         // =====================================================================
-        tag(ModTags.Items.RUBY_REPAIRABLE)
-                .add(ModItems.RUBY.getKey());
+        add(ModTags.Items.RUBY_REPAIRABLE, ModItems.RUBY.get());
 
         // =====================================================================
         // MINECRAFT
         // =====================================================================
         // (NeoForge puts these vanilla tags inside c:tools and c:armors/humanoid automatically)
-        tag(ItemTags.SWORDS).add(ModItems.RUBY_SWORD.getKey());
-        tag(ItemTags.PICKAXES).add(ModItems.RUBY_PICKAXE.getKey());
-        tag(ItemTags.SHOVELS).add(ModItems.RUBY_SHOVEL.getKey());
-        tag(ItemTags.AXES).add(ModItems.RUBY_AXE.getKey());
-        tag(ItemTags.HOES).add(ModItems.RUBY_HOE.getKey());
-        tag(ItemTags.SPEARS).add(ModItems.RUBY_SPEAR.getKey());
+        add(ItemTags.SWORDS, ModItems.RUBY_SWORD.get());
+        add(ItemTags.PICKAXES, ModItems.RUBY_PICKAXE.get());
+        add(ItemTags.SHOVELS, ModItems.RUBY_SHOVEL.get());
+        add(ItemTags.AXES, ModItems.RUBY_AXE.get());
+        add(ItemTags.HOES, ModItems.RUBY_HOE.get());
+        add(ItemTags.SPEARS, ModItems.RUBY_SPEAR.get());
 
-        tag(ItemTags.HEAD_ARMOR).add(ModItems.RUBY_HELMET.getKey());
-        tag(ItemTags.CHEST_ARMOR).add(ModItems.RUBY_CHESTPLATE.getKey());
-        tag(ItemTags.LEG_ARMOR).add(ModItems.RUBY_LEGGINGS.getKey());
-        tag(ItemTags.FOOT_ARMOR).add(ModItems.RUBY_BOOTS.getKey());
+        add(ItemTags.HEAD_ARMOR, ModItems.RUBY_HELMET.get());
+        add(ItemTags.CHEST_ARMOR, ModItems.RUBY_CHESTPLATE.get());
+        add(ItemTags.LEG_ARMOR, ModItems.RUBY_LEGGINGS.get());
+        add(ItemTags.FOOT_ARMOR, ModItems.RUBY_BOOTS.get());
 
-        tag(ItemTags.TRIM_MATERIALS).add(ModItems.RUBY.getKey());
-        tag(ItemTags.BEACON_PAYMENT_ITEMS).add(ModItems.RUBY.getKey());
+        add(ItemTags.TRIM_MATERIALS, ModItems.RUBY.get());
+        add(ItemTags.BEACON_PAYMENT_ITEMS, ModItems.RUBY.get());
 
         // The ruby pickaxe gets the maximum shards from amethyst clusters (like the diamond one)
-        tag(ItemTags.CLUSTER_MAX_HARVESTABLES).add(ModItems.RUBY_PICKAXE.getKey());
+        add(ItemTags.CLUSTER_MAX_HARVESTABLES, ModItems.RUBY_PICKAXE.get());
+
+        // The loom only accepts patterns that are in #minecraft:loom_patterns (26.3)
+        add(ItemTags.LOOM_PATTERNS, ModItems.REBELLION_BANNER_PATTERN.get());
 
         // Item version of #minecraft:ores (like the diamond ores)
-        tag(BlockItemTags.ORES.item())
-                .add(ModBlocks.RUBY_ORE.get().asItem().builtInRegistryHolder().key())
-                .add(ModBlocks.DEEPSLATE_RUBY_ORE.get().asItem().builtInRegistryHolder().key());
+        add(BlockItemTags.ORES.item(), ModBlocks.RUBY_ORE.get(), ModBlocks.DEEPSLATE_RUBY_ORE.get());
 
         // Sulfur cube: same as diamond.
         // The block and the ores "bounce slowly". This already makes them swallowable,
         // because vanilla joins every archetype in sulfur_cube_swallowable.
         // The ruby (gem) can NOT be swallowed, same as the diamond.
-        tag(ItemTags.SULFUR_CUBE_ARCHETYPE_SLOW_BOUNCY)
-                .add(ModBlocks.RUBY_BLOCK.get().asItem().builtInRegistryHolder().key())
-                .add(ModBlocks.RUBY_ORE.get().asItem().builtInRegistryHolder().key())
-                .add(ModBlocks.DEEPSLATE_RUBY_ORE.get().asItem().builtInRegistryHolder().key());
+        add(ItemTags.SULFUR_CUBE_ARCHETYPE_SLOW_BOUNCY,
+                ModBlocks.RUBY_BLOCK.get(), ModBlocks.RUBY_ORE.get(), ModBlocks.DEEPSLATE_RUBY_ORE.get());
 
         // =====================================================================
         // COMMON (c:) -> compatibility with other mods
         // =====================================================================
 
         // c:gems/ruby  ->  inside c:gems
-        tag(ModTags.Items.GEMS_RUBY)
-                .add(ModItems.RUBY.getKey());
-        tag(Tags.Items.GEMS)
-                .addTag(ModTags.Items.GEMS_RUBY);
+        add(ModTags.Items.GEMS_RUBY, ModItems.RUBY.get());
+        addTag(Tags.Items.GEMS, ModTags.Items.GEMS_RUBY);
 
         // c:ores/ruby  ->  inside c:ores
-        tag(ModTags.Items.ORES_RUBY)
-                .add(ModBlocks.RUBY_ORE.get().asItem().builtInRegistryHolder().key())
-                .add(ModBlocks.DEEPSLATE_RUBY_ORE.get().asItem().builtInRegistryHolder().key());
-        tag(Tags.Items.ORES)
-                .addTag(ModTags.Items.ORES_RUBY);
+        add(ModTags.Items.ORES_RUBY, ModBlocks.RUBY_ORE.get(), ModBlocks.DEEPSLATE_RUBY_ORE.get());
+        addTag(Tags.Items.ORES, ModTags.Items.ORES_RUBY);
 
         // Which stone each ore is in
-        tag(Tags.Items.ORES_IN_GROUND_STONE)
-                .add(ModBlocks.RUBY_ORE.get().asItem().builtInRegistryHolder().key());
-        tag(Tags.Items.ORES_IN_GROUND_DEEPSLATE)
-                .add(ModBlocks.DEEPSLATE_RUBY_ORE.get().asItem().builtInRegistryHolder().key());
+        add(Tags.Items.ORES_IN_GROUND_STONE, ModBlocks.RUBY_ORE.get());
+        add(Tags.Items.ORES_IN_GROUND_DEEPSLATE, ModBlocks.DEEPSLATE_RUBY_ORE.get());
 
         // They drop 1 item, like the diamond ores
-        tag(Tags.Items.ORE_RATES_SINGULAR)
-                .add(ModBlocks.RUBY_ORE.get().asItem().builtInRegistryHolder().key())
-                .add(ModBlocks.DEEPSLATE_RUBY_ORE.get().asItem().builtInRegistryHolder().key());
+        add(Tags.Items.ORE_RATES_SINGULAR, ModBlocks.RUBY_ORE.get(), ModBlocks.DEEPSLATE_RUBY_ORE.get());
 
         // c:storage_blocks/ruby  ->  inside c:storage_blocks
-        tag(ModTags.Items.STORAGE_BLOCKS_RUBY)
-                .add(ModBlocks.RUBY_BLOCK.get().asItem().builtInRegistryHolder().key());
-        tag(Tags.Items.STORAGE_BLOCKS)
-                .addTag(ModTags.Items.STORAGE_BLOCKS_RUBY);
+        add(ModTags.Items.STORAGE_BLOCKS_RUBY, ModBlocks.RUBY_BLOCK.get());
+        addTag(Tags.Items.STORAGE_BLOCKS, ModTags.Items.STORAGE_BLOCKS_RUBY);
 
         // Tools: NeoForge only puts the vanilla ones here, so we add ours
         // (same as the diamond pickaxe / sword / axe / spear)
-        tag(Tags.Items.MINING_TOOL_TOOLS)
-                .add(ModItems.RUBY_PICKAXE.getKey());
-        tag(Tags.Items.MELEE_WEAPON_TOOLS)
-                .add(ModItems.RUBY_SWORD.getKey())
-                .add(ModItems.RUBY_AXE.getKey())
-                .add(ModItems.RUBY_SPEAR.getKey());
+        add(Tags.Items.MINING_TOOL_TOOLS, ModItems.RUBY_PICKAXE.get());
+        add(Tags.Items.MELEE_WEAPON_TOOLS, ModItems.RUBY_SWORD.get(), ModItems.RUBY_AXE.get(), ModItems.RUBY_SPEAR.get());
 
         // Animal armor (player armor already gets in through the vanilla tags)
-        tag(Tags.Items.ARMORS_HORSE)
-                .add(ModItems.RUBY_HORSE_ARMOR.getKey());
-        tag(Tags.Items.ARMORS_NAUTILUS)
-                .add(ModItems.RUBY_NAUTILUS_ARMOR.getKey());
+        add(Tags.Items.ARMORS_HORSE, ModItems.RUBY_HORSE_ARMOR.get());
+        add(Tags.Items.ARMORS_NAUTILUS, ModItems.RUBY_NAUTILUS_ARMOR.get());
+    }
+
+    // =========================================================================
+    // Helpers
+    // =========================================================================
+
+    /** Adds items (or block items) to a tag, by their id (e.g. travelyourearth:ruby). */
+    private void add(TagKey<Item> tag, ItemLike... items) {
+        TagBuilder builder = getOrCreateRawBuilder(tag);
+        for (ItemLike item : items) {
+            builder.addElement(BuiltInRegistries.ITEM.getKey(item.asItem()));
+        }
+    }
+
+    /** Puts a whole tag inside another one (e.g. c:gems/ruby inside c:gems). */
+    private void addTag(TagKey<Item> tag, TagKey<Item> child) {
+        getOrCreateRawBuilder(tag).addTag(child.location());
     }
 }

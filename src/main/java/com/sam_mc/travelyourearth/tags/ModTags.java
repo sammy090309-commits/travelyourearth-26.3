@@ -6,10 +6,16 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BannerPattern;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.level.levelgen.structure.Structure;
 
 /**
- * Tag keys of the mod. Their contents are generated in ModBlockTagsProvider and ModItemTagsProvider.
+ * Tag keys of the mod. Their contents are generated in ModBlockTagsProvider, ModItemTagsProvider,
+ * ModStructureTagsProvider, ModEntityTypeTagsProvider, ModEnchantmentTagsProvider and ModBannerPatternTagsProvider.
  */
 public class ModTags {
 
@@ -55,6 +61,64 @@ public class ModTags {
 
         private static TagKey<Item> commonTag(String name) {
             return ItemTags.create(Identifier.fromNamespaceAndPath("c", name));
+        }
+    }
+
+    // =========================================================================
+    // Structures
+    // =========================================================================
+    public static class Structures {
+
+        /** Structures the Trail Ruins explorer map can point to. */
+        public static final TagKey<Structure> ON_TRAIL_RUINS_MAPS = createTag("on_trail_ruins_maps");
+
+        /** Structures the illegal cartographer's Ancient City map can point to. */
+        public static final TagKey<Structure> ON_ANCIENT_CITY_MAPS = createTag("on_ancient_city_maps");
+
+        private static TagKey<Structure> createTag(String name) {
+            return TagKey.create(Registries.STRUCTURE, Identifier.fromNamespaceAndPath(TravelYourEarth.MODID, name));
+        }
+    }
+
+    // =========================================================================
+    // Entity types
+    // =========================================================================
+    public static class EntityTypes {
+
+        /**
+         * Mobs that take extra damage from Banishment: the whole "big nose" family
+         * (villagers, illagers, witches...) plus the ravager.
+         */
+        public static final TagKey<EntityType<?>> SENSITIVE_TO_BANISHMENT = createTag("sensitive_to_banishment");
+
+        private static TagKey<EntityType<?>> createTag(String name) {
+            return TagKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(TravelYourEarth.MODID, name));
+        }
+    }
+
+    // =========================================================================
+    // Enchantments
+    // =========================================================================
+    public static class Enchantments {
+
+        /** Enchantments that can't be combined with Harpoon (Knockback: one pushes, the other pulls). */
+        public static final TagKey<Enchantment> HARPOON_EXCLUSIVE = createTag("exclusive_set/harpoon");
+
+        private static TagKey<Enchantment> createTag(String name) {
+            return TagKey.create(Registries.ENCHANTMENT, Identifier.fromNamespaceAndPath(TravelYourEarth.MODID, name));
+        }
+    }
+
+    // =========================================================================
+    // Banner patterns
+    // =========================================================================
+    public static class BannerPatterns {
+
+        /** Patterns unlocked in the loom by the Rebellion Banner Pattern item (like #minecraft:pattern_item/flow). */
+        public static final TagKey<BannerPattern> PATTERN_ITEM_REBELLION = createTag("pattern_item/rebellion");
+
+        private static TagKey<BannerPattern> createTag(String name) {
+            return TagKey.create(Registries.BANNER_PATTERN, Identifier.fromNamespaceAndPath(TravelYourEarth.MODID, name));
         }
     }
 }

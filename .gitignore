@@ -38,3 +38,6 @@ run/
 **/src/generated/**/.cache/
 repo/
 !**/src/**/repo/
+
+### Fonts with a license that does not allow sharing them (do NOT upload to GitHub) ###
+src/main/resources/assets/travelyourearth/font/minecraft_ten.ttf

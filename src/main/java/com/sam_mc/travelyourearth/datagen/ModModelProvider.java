@@ -80,6 +80,14 @@ public class ModModelProvider extends ModelProvider {
         itemModels.generateFlatItem(ModItems.RUBY_HORSE_ARMOR.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.RUBY_NAUTILUS_ARMOR.get(), ModelTemplates.FLAT_ITEM);
 
+        // --- Maps (1.2) ---
+        // Trail Ruins explorer map: texture textures/item/buried_trail_ruins_map.png (16x16)
+        itemModels.generateFlatItem(ModItems.BURIED_TRAIL_RUINS_MAP.get(), ModelTemplates.FLAT_ITEM);
+
+        // --- Banner patterns (1.2) ---
+        // Rebellion banner pattern: texture textures/item/rebellion_banner_pattern.png (16x16)
+        itemModels.generateFlatItem(ModItems.REBELLION_BANNER_PATTERN.get(), ModelTemplates.FLAT_ITEM);
+
         // =====================================================================
         // BLOCKS
         // =====================================================================

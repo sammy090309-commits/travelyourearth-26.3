@@ -3,7 +3,12 @@ package com.sam_mc.travelyourearth.datagen;
 import com.sam_mc.travelyourearth.TravelYourEarth;
 import com.sam_mc.travelyourearth.block.ModBlocks;
 import com.sam_mc.travelyourearth.item.ModItems;
+import com.sam_mc.travelyourearth.potion.ModPotions;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.component.predicates.PotionsPredicate;
 import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.core.registries.MultiRegistryBootstrap;
@@ -12,11 +17,19 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
+import net.minecraft.world.item.crafting.BrewingRecipe;
 import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.PotionIngredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
@@ -24,11 +37,15 @@ import net.minecraft.world.level.block.Blocks;
 import java.util.List;
 import java.util.Set;
 
-/** Generates the recipes of the mod (crafting, smelting and blasting). */
+/** Generates the recipes of the mod (crafting, smelting, blasting and brewing). */
 public class ModRecipeProvider extends RecipeProvider {
+
+    /** Kept so we can register recipes that have no builder (like brewing). */
+    private final BootstrapContext<Recipe<?>> recipes;
 
     public ModRecipeProvider(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
         super(recipeOutput, advancementOutput);
+        this.recipes = recipeOutput;
     }
 
     // =====================================================================
@@ -60,6 +77,7 @@ public class ModRecipeProvider extends RecipeProvider {
         buildRubyToolRecipes();
         buildRubyArmorRecipes();
         buildRubySmeltingRecipes();
+        buildDecayBrewingRecipes();
     }
 
     // ---------------------------------------------------------------------
@@ -128,6 +146,29 @@ public class ModRecipeProvider extends RecipeProvider {
         oreBlasting(rubySmeltables, RecipeCategory.MISC, CookingBookCategory.MISC, ModItems.RUBY.get(), 0.85f, 200, "ruby");
     }
 
+    // ---------------------------------------------------------------------
+    // Brewing stand (26.3: brewing recipes are data-driven, minecraft:brewing)
+    // ---------------------------------------------------------------------
+    private void buildDecayBrewingRecipes() {
+        // The brewing recipe output is a fixed item, so each bottle type needs its own recipe.
+        List<Item> bottles = List.of(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION);
+
+        for (Item bottle : bottles) {
+            // Awkward + Wither Rose -> Decay (Wither I, 0:45)
+            brewing(bottle, Potions.AWKWARD, Items.WITHER_ROSE, bottle, ModPotions.DECAY);
+            // Decay + Redstone -> Long Decay (Wither I, 1:30)
+            brewing(bottle, ModPotions.DECAY, Items.REDSTONE, bottle, ModPotions.LONG_DECAY);
+            // Decay + Glowstone Dust -> Decay II (Wither II, 0:21)
+            brewing(bottle, ModPotions.DECAY, Items.GLOWSTONE_DUST, bottle, ModPotions.STRONG_DECAY);
+        }
+
+        // Bottle conversions: Gunpowder -> splash, Dragon's Breath -> lingering
+        for (Holder<Potion> decay : List.<Holder<Potion>>of(ModPotions.DECAY, ModPotions.LONG_DECAY, ModPotions.STRONG_DECAY)) {
+            brewing(Items.POTION, decay, Items.GUNPOWDER, Items.SPLASH_POTION, decay);
+            brewing(Items.SPLASH_POTION, decay, Items.DRAGON_BREATH, Items.LINGERING_POTION, decay);
+        }
+    }
+
     // =====================================================================
     // HELPERS
     // =====================================================================
@@ -166,5 +207,31 @@ public class ModRecipeProvider extends RecipeProvider {
                     .unlockedBy(getHasName(itemlike), has(itemlike))
                     .save(output, TravelYourEarth.MODID + ":" + getItemName(result) + fromDesc + "_" + getItemName(itemlike));
         }
+    }
+
+    /**
+     * One brewing recipe: (inputBottle with inputPotion) + reagent -> (outputBottle with outputPotion).
+     * Saved as travelyourearth:brewing/<output bottle>_<output potion>_from_<input bottle>_<input potion>.
+     */
+    private void brewing(Item inputBottle, Holder<Potion> inputPotion, Item reagent,
+                         Item outputBottle, Holder<Potion> outputPotion) {
+        PotionIngredient input = PotionIngredient.of(inputBottle, PotionsPredicate.ofPotion(inputPotion));
+        PotionIngredient reagentIngredient = PotionIngredient.of(reagent);
+        // Built without an ItemStack: in datagen the item components are not bound yet.
+        ItemStackTemplate result = new ItemStackTemplate(outputBottle, DataComponentPatch.builder()
+                .set(DataComponents.POTION_CONTENTS, new PotionContents(outputPotion))
+                .build());
+
+        String name = "brewing/" + getItemName(outputBottle) + "_" + potionName(outputPotion)
+                + "_from_" + getItemName(inputBottle) + "_" + potionName(inputPotion);
+        ResourceKey<Recipe<?>> key = ResourceKey.create(Registries.RECIPE,
+                Identifier.fromNamespaceAndPath(TravelYourEarth.MODID, name));
+
+        recipes.register(key, new BrewingRecipe(input, reagentIngredient, result));
+    }
+
+    /** "minecraft:awkward" -> "awkward", "travelyourearth:long_decay" -> "long_decay". */
+    private static String potionName(Holder<Potion> potion) {
+        return potion.unwrapKey().orElseThrow().identifier().getPath();
     }
 }

@@ -2,20 +2,30 @@ package com.sam_mc.travelyourearth.datagen;
 
 import com.sam_mc.travelyourearth.TravelYourEarth;
 import com.sam_mc.travelyourearth.block.ModBlocks;
+import com.sam_mc.travelyourearth.enchantment.ModEnchantments;
 import com.sam_mc.travelyourearth.item.ModItems;
+import com.sam_mc.travelyourearth.map.ModMapDecorations;
+import com.sam_mc.travelyourearth.tags.ModTags;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.EnchantmentTags;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.trading.VillagerTrades;
+import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.DiscardItem;
 import net.minecraft.world.level.storage.loot.functions.EnchantRandomlyFunction;
 import net.minecraft.world.level.storage.loot.functions.EnchantWithLevelsFunction;
+import net.minecraft.world.level.storage.loot.functions.ExplorationMapFunction;
+import net.minecraft.world.level.storage.loot.functions.FilteredFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemDamageFunction;
@@ -46,7 +56,8 @@ import java.util.Set;
  * RUBY EQUIPMENT (tools, weapons, armor, horse / nautilus armor) keeps the same chance, count,
  * damage and enchantment as its diamond version, multiplied by RARITY_MULTIPLIER.
  *
- * Villages: no ruby.
+ * Villages: only SAVANNA villages ("the country of the ruby"): the savanna house chest gets its own
+ * ruby table (that chest only exists in savanna villages, so no other village gets rubies).
  *
  * Each key is declared together with the vanilla table it hooks into (chest / vault / pot).
  * ModGlobalLootModifierProvider goes through TARGETS and creates the modifiers by itself,
@@ -88,6 +99,10 @@ public class ModExtraLootProvider implements LootTableSubProvider {
     // --- Abandoned camp (26.3) — secret chest ----------------------------------------
     public static final ResourceKey<LootTable> ABANDONED_CAMP_SECRET_RUBY =
             chest("abandoned_camp_secret_chest", "abandoned_camp/secret_ruby");
+
+    // Trail ruins map: one more of the "buried" explorer maps of the secret chest (1.2)
+    public static final ResourceKey<LootTable> ABANDONED_CAMP_SECRET_TRAIL_RUINS_MAP =
+            chest("abandoned_camp_secret_chest", "abandoned_camp/secret_trail_ruins_map");
 
     // --- Igloo (emerald only in vanilla) ----------------------------------------------
     public static final ResourceKey<LootTable> IGLOO_RUBY =
@@ -252,6 +267,15 @@ public class ModExtraLootProvider implements LootTableSubProvider {
             chest("woodland_mansion", "woodland_mansion/boots_damaged_enchanted");
     public static final ResourceKey<LootTable> MANSION_HORSE_ARMOR =
             chest("woodland_mansion", "woodland_mansion/horse_armor");
+    // Banishment (1.2): illagers live in mansions, so their nemesis enchantment hides there (rare)
+    public static final ResourceKey<LootTable> MANSION_BANISHMENT_BOOK =
+            chest("woodland_mansion", "woodland_mansion/banishment_book");
+    public static final ResourceKey<LootTable> MANSION_SWORD_BANISHMENT =
+            chest("woodland_mansion", "woodland_mansion/sword_banishment");
+    public static final ResourceKey<LootTable> MANSION_SPEAR_BANISHMENT =
+            chest("woodland_mansion", "woodland_mansion/spear_banishment");
+    public static final ResourceKey<LootTable> MANSION_AXE_BANISHMENT =
+            chest("woodland_mansion", "woodland_mansion/axe_banishment");
 
     // --- Pillager outpost (the mod's OWN VALUES) -------------------------------------------------------------
     public static final ResourceKey<LootTable> OUTPOST_RUBY =
@@ -270,6 +294,11 @@ public class ModExtraLootProvider implements LootTableSubProvider {
             chest("pillager_outpost", "pillager_outpost/boots_damaged");
     public static final ResourceKey<LootTable> OUTPOST_HORSE_ARMOR =
             chest("pillager_outpost", "pillager_outpost/horse_armor");
+
+    // --- Savanna village house ("the country of the ruby": the mod's OWN VALUE) -----------------------------
+    // "village_savanna_house" only exists in savanna villages, so no other village gets this ruby.
+    public static final ResourceKey<LootTable> SAVANNA_HOUSE_RUBY =
+            chest("village/village_savanna_house", "village/savanna_house_ruby");
 
     // =========================================================================
     // =========================  2. VAULTS (Trial chambers)  ==================
@@ -290,6 +319,13 @@ public class ModExtraLootProvider implements LootTableSubProvider {
             vault("trial_chambers/reward_ominous", "trial_chambers/ominous_spear_enchanted");
     public static final ResourceKey<LootTable> OMINOUS_VAULT_LEGGINGS =
             vault("trial_chambers/reward_ominous", "trial_chambers/ominous_leggings_enchanted");
+    // Cowardice and Harpoon (1.2): very rare, ONLY in the ominous vault
+    public static final ResourceKey<LootTable> OMINOUS_VAULT_SPEAR_HARPOON =
+            vault("trial_chambers/reward_ominous", "trial_chambers/ominous_spear_harpoon");
+    public static final ResourceKey<LootTable> OMINOUS_VAULT_COWARDICE_BOOK =
+            vault("trial_chambers/reward_ominous", "trial_chambers/ominous_cowardice_book");
+    public static final ResourceKey<LootTable> OMINOUS_VAULT_HARPOON_BOOK =
+            vault("trial_chambers/reward_ominous", "trial_chambers/ominous_harpoon_book");
 
     // =========================================================================
     // =========================  3. DECORATED POTS  ===========================
@@ -344,6 +380,21 @@ public class ModExtraLootProvider implements LootTableSubProvider {
      */
     public static final float RARITY_MULTIPLIER = 0.75f;
 
+    /**
+     * 1.2: a little more loot in general (x1.1): rubies, ruby equipment, archaeology, savanna chests.
+     * NOT for the tables where the ruby copies a "repeated" chance (sameAsAll, diamond == emerald,
+     * SAME_AS_EMERALD in archaeology). Public: ModGlobalLootModifierProvider uses it too.
+     */
+    public static final float LOOT_BOOST = 1.1f;
+    /** Ruby weapons (sword, spear, axe) get a smaller boost. */
+    private static final float WEAPON_BOOST = 1.05f;
+    /** Pillager outposts and woodland mansions (the illagers' homes): MUCH more ruby loot. */
+    private static final float ILLAGER_HOME_BOOST = 1.5f;
+    /** Mansion weapons: this part of them comes with Banishment instead of plain. */
+    private static final float MANSION_BANISHMENT_SHARE = 0.15f;
+    /** Ominous vault spear: this part of them comes with Harpoon too. */
+    private static final float OMINOUS_SPEAR_HARPOON_SHARE = 0.10f;
+
     /** Ruby in a table with diamond only: 1.2x the diamond. */
     private static final float RUBY_WITH_DIAMOND = 1.2f;
     /** Ruby in a table with diamond and emerald: 1.5x the diamond (always below the emerald). */
@@ -352,19 +403,21 @@ public class ModExtraLootProvider implements LootTableSubProvider {
     private static final float RUBY_MAX_VS_EMERALD = 0.9f;
     /** Ruby in a table with emerald only: 0.8x the emerald. */
     private static final float RUBY_EMERALD_ONLY = 0.8f;
+    /** Savanna village house: chance per chest of getting rubies (own value, very common). */
+    private static final float SAVANNA_HOUSE_RUBY_CHANCE = 0.45f;
     /** Woodland mansion and pillager outpost: own values raised just a little. */
     private static final float RUBY_OWN_VALUES_BOOST = 1.1f;
 
     /** Table with diamond only. */
     private static float withDiamond(float diamond) {
-        return diamond * RUBY_WITH_DIAMOND;
+        return diamond * RUBY_WITH_DIAMOND * LOOT_BOOST;
     }
 
     /** Table with diamond and emerald. */
     private static float withDiamondAndEmerald(float diamond, float emerald) {
-        if (diamond == emerald) return diamond;                  // same chance -> same chance
-        if (emerald < diamond) return (diamond + emerald) / 2f;  // emerald rarer -> right between them
-        return Math.min(diamond * RUBY_WITH_DIAMOND_AND_EMERALD, emerald * RUBY_MAX_VS_EMERALD);
+        if (diamond == emerald) return diamond;                  // same chance -> same chance (no boost)
+        if (emerald < diamond) return (diamond + emerald) / 2f * LOOT_BOOST;  // emerald rarer -> between them
+        return Math.min(diamond * RUBY_WITH_DIAMOND_AND_EMERALD * LOOT_BOOST, emerald * RUBY_MAX_VS_EMERALD);
     }
 
     /** Table where every item has the same chance. */
@@ -374,12 +427,12 @@ public class ModExtraLootProvider implements LootTableSubProvider {
 
     /** Table with emerald only. */
     private static float emeraldOnly(float emerald) {
-        return emerald * RUBY_EMERALD_ONLY;
+        return emerald * RUBY_EMERALD_ONLY * LOOT_BOOST;
     }
 
     /** Woodland mansion and pillager outpost (base value -> same as before, x1.1). */
     private static float ownValues(float base) {
-        return base * RARITY_MULTIPLIER * RUBY_OWN_VALUES_BOOST;
+        return base * RARITY_MULTIPLIER * RUBY_OWN_VALUES_BOOST * ILLAGER_HOME_BOOST;
     }
 
     // =========================================================================
@@ -389,6 +442,7 @@ public class ModExtraLootProvider implements LootTableSubProvider {
     // 26.3: LootTableSubProvider receives a Context and overrides run().
     private final LootTableSubProvider.Context output;
     private HolderGetter<Enchantment> enchantments; // filled at the start of run()
+    private HolderGetter<Structure> structures;     // filled at the start of run()
     private final Set<ResourceKey<LootTable>> generated = new HashSet<>();
 
     public ModExtraLootProvider(LootTableSubProvider.Context output) {
@@ -398,6 +452,7 @@ public class ModExtraLootProvider implements LootTableSubProvider {
     @Override
     public void run() {
         this.enchantments = this.output.lookup(Registries.ENCHANTMENT);
+        this.structures = this.output.lookup(Registries.STRUCTURE);
 
         // Shortcuts so the lines aren't super long
         ItemLike ruby = ModItems.RUBY.get();
@@ -441,6 +496,13 @@ public class ModExtraLootProvider implements LootTableSubProvider {
 
         // --- Abandoned camp: secret chest (vanilla: diamond and the 4 potions, all 36.0%) ---
         addRuby(ABANDONED_CAMP_SECRET_RUBY, sameAsAll(0.36f), ruby, count(1, 3));  // 36.0%
+        // Trail ruins map: vanilla gives 1 of 7 "buried" maps here (14.3% each); ours is like an 8th one.
+        // Same functions as vanilla's maps: finds the nearest trail ruins, and if there's none, no map.
+        addRuby(ABANDONED_CAMP_SECRET_TRAIL_RUINS_MAP, 0.125f, ModItems.BURIED_TRAIL_RUINS_MAP.get(),
+                ExplorationMapFunction.makeExplorationMap(this.structures.getOrThrow(ModTags.Structures.ON_TRAIL_RUINS_MAPS))
+                        .setMapDecoration(ModMapDecorations.TRAIL_RUINS)
+                        .setSkipKnownStructures(true),
+                discardIfNotValidMap());  // 12.5%
 
         // --- Igloo (vanilla: emerald 7.6%) ---
         addRuby(IGLOO_RUBY,                emeraldOnly(0.0764f), ruby);  // 6.1%
@@ -519,34 +581,43 @@ public class ModExtraLootProvider implements LootTableSubProvider {
         add(TRIAL_BARREL_AXE,       0.0609f, axe, damage(0.4f, 0.9f), enchantRandomly());  // 6.1%
 
         // --- Woodland mansion (OWN VALUES; enchantment 15-30) ---
-        addRuby(MANSION_RUBY,                      ownValues(0.32f), ruby, count(2, 4));  // 26.4% (was 24%)
-        add(MANSION_SWORD,                         0.034f, sword);
-        add(MANSION_SWORD_DAMAGED_ENCHANTED,       0.012f, sword, damage(0.8f, 1.0f), enchantLevels(15, 30));
-        add(MANSION_SPEAR,                         0.034f, spear);
-        add(MANSION_SPEAR_DAMAGED_ENCHANTED,       0.012f, spear, damage(0.8f, 1.0f), enchantLevels(15, 30));
-        add(MANSION_PICKAXE,                       0.034f, pickaxe, enchantLevels(15, 30));
-        add(MANSION_AXE,                           0.034f, axe, enchantLevels(15, 30));
-        add(MANSION_SHOVEL,                        0.034f, shovel, enchantLevels(15, 30));
-        add(MANSION_HOE,                           0.034f, hoe, enchantLevels(15, 30));
-        add(MANSION_HELMET,                        0.032f, helmet);
-        add(MANSION_HELMET_DAMAGED_ENCHANTED,      0.021f, helmet, damage(0.8f, 1.0f), enchantLevels(15, 30));
-        add(MANSION_CHESTPLATE,                    0.032f, chestplate);
-        add(MANSION_CHESTPLATE_DAMAGED_ENCHANTED,  0.021f, chestplate, damage(0.8f, 1.0f), enchantLevels(15, 30));
-        add(MANSION_LEGGINGS,                      0.032f, leggings);
-        add(MANSION_LEGGINGS_DAMAGED_ENCHANTED,    0.021f, leggings, damage(0.8f, 1.0f), enchantLevels(15, 30));
-        add(MANSION_BOOTS,                         0.032f, boots);
-        add(MANSION_BOOTS_DAMAGED_ENCHANTED,       0.021f, boots, damage(0.8f, 1.0f), enchantLevels(15, 30));
-        add(MANSION_HORSE_ARMOR,                   0.012f, horseArmor);
+        addRuby(MANSION_RUBY,                      ownValues(0.32f), ruby, count(2, 4));  // 39.6% (1.2: x1.5, the illagers' home)
+        addIllagerHome(MANSION_SWORD,                         0.034f * (1 - MANSION_BANISHMENT_SHARE), sword);
+        addIllagerHome(MANSION_SWORD_DAMAGED_ENCHANTED,       0.012f, sword, damage(0.8f, 1.0f), enchantLevels(15, 30));
+        addIllagerHome(MANSION_SPEAR,                         0.034f * (1 - MANSION_BANISHMENT_SHARE), spear);
+        addIllagerHome(MANSION_SPEAR_DAMAGED_ENCHANTED,       0.012f, spear, damage(0.8f, 1.0f), enchantLevels(15, 30));
+        addIllagerHome(MANSION_PICKAXE,                       0.034f, pickaxe, enchantLevels(15, 30));
+        addIllagerHome(MANSION_AXE,                           0.034f * (1 - MANSION_BANISHMENT_SHARE), axe, enchantLevels(15, 30));
+        addIllagerHome(MANSION_SHOVEL,                        0.034f, shovel, enchantLevels(15, 30));
+        addIllagerHome(MANSION_HOE,                           0.034f, hoe, enchantLevels(15, 30));
+        addIllagerHome(MANSION_HELMET,                        0.032f, helmet);
+        addIllagerHome(MANSION_HELMET_DAMAGED_ENCHANTED,      0.021f, helmet, damage(0.8f, 1.0f), enchantLevels(15, 30));
+        addIllagerHome(MANSION_CHESTPLATE,                    0.032f, chestplate);
+        addIllagerHome(MANSION_CHESTPLATE_DAMAGED_ENCHANTED,  0.021f, chestplate, damage(0.8f, 1.0f), enchantLevels(15, 30));
+        addIllagerHome(MANSION_LEGGINGS,                      0.032f, leggings);
+        addIllagerHome(MANSION_LEGGINGS_DAMAGED_ENCHANTED,    0.021f, leggings, damage(0.8f, 1.0f), enchantLevels(15, 30));
+        addIllagerHome(MANSION_BOOTS,                         0.032f, boots);
+        addIllagerHome(MANSION_BOOTS_DAMAGED_ENCHANTED,       0.021f, boots, damage(0.8f, 1.0f), enchantLevels(15, 30));
+        addIllagerHome(MANSION_HORSE_ARMOR,                   0.012f, horseArmor);
+        // Banishment: 15% of the mansion's ruby weapons come with it, and a rare book (3% per chest)
+        addIllagerHome(MANSION_SWORD_BANISHMENT, 0.034f * MANSION_BANISHMENT_SHARE, sword, onlyEnchantment(ModEnchantments.BANISHMENT));
+        addIllagerHome(MANSION_SPEAR_BANISHMENT, 0.034f * MANSION_BANISHMENT_SHARE, spear, onlyEnchantment(ModEnchantments.BANISHMENT));
+        addIllagerHome(MANSION_AXE_BANISHMENT,   0.034f * MANSION_BANISHMENT_SHARE, axe, onlyEnchantment(ModEnchantments.BANISHMENT));
+        addRuby(MANSION_BANISHMENT_BOOK, 0.03f, Items.BOOK, onlyEnchantment(ModEnchantments.BANISHMENT));  // 3%
 
         // --- Pillager outpost (OWN VALUES) ---
-        addRuby(OUTPOST_RUBY,     ownValues(0.45f), ruby, count(1, 3));  // 37.1% (was 33.8%)
-        add(OUTPOST_SWORD,        0.15f, sword, damage(0.3f, 0.9f));
-        add(OUTPOST_SPEAR,        0.15f, spear, damage(0.3f, 0.9f));
-        add(OUTPOST_PICKAXE,      0.176f, pickaxe, damage(0.3f, 0.9f));
-        add(OUTPOST_AXE,          0.172f, axe, damage(0.3f, 0.9f));
-        add(OUTPOST_CHESTPLATE,   0.092f, chestplate, damage(0.3f, 0.9f));
-        add(OUTPOST_BOOTS,        0.092f, boots, damage(0.3f, 0.9f));
-        add(OUTPOST_HORSE_ARMOR,  0.10f, horseArmor);
+        addRuby(OUTPOST_RUBY,     ownValues(0.45f), ruby, count(1, 3));  // 55.7% (1.2: x1.5, the illagers' home)
+        addIllagerHome(OUTPOST_SWORD,        0.15f, sword, damage(0.3f, 0.9f));
+        addIllagerHome(OUTPOST_SPEAR,        0.15f, spear, damage(0.3f, 0.9f));
+        addIllagerHome(OUTPOST_PICKAXE,      0.176f, pickaxe, damage(0.3f, 0.9f));
+        addIllagerHome(OUTPOST_AXE,          0.172f, axe, damage(0.3f, 0.9f));
+        addIllagerHome(OUTPOST_CHESTPLATE,   0.092f, chestplate, damage(0.3f, 0.9f));
+        addIllagerHome(OUTPOST_BOOTS,        0.092f, boots, damage(0.3f, 0.9f));
+        addIllagerHome(OUTPOST_HORSE_ARMOR,  0.10f, horseArmor);
+
+        // --- Savanna village house (OWN VALUE: the ruby is the savanna's money, so it's common).
+        //     Vanilla emerald there: ~11% per chest -> the ruby is way more common on purpose. ---
+        addRuby(SAVANNA_HOUSE_RUBY, SAVANNA_HOUSE_RUBY_CHANCE * LOOT_BOOST, ruby, count(1, 4));  // 49.5%
 
         // =====================================================================
         // 2. VAULTS
@@ -562,7 +633,12 @@ public class ModExtraLootProvider implements LootTableSubProvider {
         //     enchantment level 10-20) ---
         addRuby(OMINOUS_VAULT_RUBY,        withDiamondAndEmerald(0.2639f, 0.5621f), ruby, count(2, 3));  // 39.6%
         addRuby(OMINOUS_VAULT_RUBY_BLOCK,  withDiamondAndEmerald(0.0276f, 0.1379f), rubyBlock);  // 4.1%
-        add(OMINOUS_VAULT_SPEAR,           0.0828f, spear, enchantLevels(10, 20));  // 8.3%
+        add(OMINOUS_VAULT_SPEAR,           0.0828f * (1 - OMINOUS_SPEAR_HARPOON_SHARE), spear, enchantLevels(10, 20));
+        // 10% of the ominous spears come with Harpoon too; Cowardice and Harpoon books: 2.5% each (very rare)
+        add(OMINOUS_VAULT_SPEAR_HARPOON,   0.0828f * OMINOUS_SPEAR_HARPOON_SHARE, spear, enchantLevels(10, 20),
+                onlyEnchantment(ModEnchantments.HARPOON));
+        addRuby(OMINOUS_VAULT_COWARDICE_BOOK, 0.025f, Items.BOOK, onlyEnchantment(ModEnchantments.COWARDICE));  // 2.5%
+        addRuby(OMINOUS_VAULT_HARPOON_BOOK,   0.025f, Items.BOOK, onlyEnchantment(ModEnchantments.HARPOON));    // 2.5%
         add(OMINOUS_VAULT_LEGGINGS,        0.0828f, leggings, enchantLevels(10, 20));  // 8.3%
 
         // =====================================================================
@@ -590,7 +666,32 @@ public class ModExtraLootProvider implements LootTableSubProvider {
      * Example: add(KEY, 0.15f, sword, damage(0.8f, 1.0f), enchantRandomly());
      */
     private void add(ResourceKey<LootTable> key, float chance, ItemLike item, LootItemFunction.Builder... functions) {
-        addTable(key, chance * RARITY_MULTIPLIER, item, functions);
+        addTable(key, chance * RARITY_MULTIPLIER * boostFor(item), item, functions);
+    }
+
+    /** Pillager outposts and woodland mansions: like add(), but x1.5 (ILLAGER_HOME_BOOST). */
+    private void addIllagerHome(ResourceKey<LootTable> key, float chance, ItemLike item, LootItemFunction.Builder... functions) {
+        add(key, chance * ILLAGER_HOME_BOOST, item, functions);
+    }
+
+    /** The general boost: weapons a bit less than the rest. */
+    private static float boostFor(ItemLike item) {
+        Item it = item.asItem();
+        boolean weapon = it == ModItems.RUBY_SWORD.get() || it == ModItems.RUBY_SPEAR.get() || it == ModItems.RUBY_AXE.get();
+        return weapon ? WEAPON_BOOST : LOOT_BOOST;
+    }
+
+    /**
+     * Exactly this enchantment, at a random level (I..max). On a book it becomes an enchanted book.
+     * Only if the item supports it (vanilla enchant_randomly checks that by itself).
+     */
+    private LootItemFunction.Builder onlyEnchantment(ResourceKey<Enchantment> enchantment) {
+        return EnchantRandomlyFunction.randomEnchantment().withEnchantment(this.enchantments.getOrThrow(enchantment));
+    }
+
+    /** Same as vanilla's explorer maps: if no structure was found (blank map), the map is thrown away. */
+    private static LootItemFunction.Builder discardIfNotValidMap() {
+        return FilteredFunction.filtered(VillagerTrades.anyValidMap().build()).onFail(DiscardItem.discardItem().build());
     }
 
     /**

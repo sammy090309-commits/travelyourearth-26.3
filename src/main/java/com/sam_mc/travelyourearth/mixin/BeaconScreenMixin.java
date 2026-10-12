@@ -1,5 +1,7 @@
 package com.sam_mc.travelyourearth.mixin;
 
+import com.sam_mc.travelyourearth.Config;
+import com.sam_mc.travelyourearth.TravelYourEarth;
 import com.sam_mc.travelyourearth.client.BeaconPayments;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.BeaconScreen;
@@ -19,6 +21,7 @@ import java.util.List;
  * Beacon screen: the payment items shown at the bottom of the GUI rotate in pages of 3
  * (gems, ingots, and items from other mods), changing every 5 seconds.
  * The pages come from BeaconPayments, the same list used by BeaconPaymentPanel.
+ * With "Enhanced beacon" off (Config -> Client) it does nothing: vanilla's 4 payment items.
  */
 @Mixin(BeaconScreen.class)
 public abstract class BeaconScreenMixin {
@@ -27,8 +30,13 @@ public abstract class BeaconScreenMixin {
     // Constants and state
     // =========================================================================
 
+    /**
+     * OUR beacon texture, in the mod's own folder: assets/travelyourearth/textures/gui/container/beacon.png
+     * (NOT in assets/minecraft/..., or it would also replace vanilla's beacon when "Enhanced beacon" is off).
+     */
     @Unique
-    private static final Identifier BEACON_CUSTOM_TEXTURE = Identifier.withDefaultNamespace("textures/gui/container/beacon.png");
+    private static final Identifier BEACON_CUSTOM_TEXTURE =
+            Identifier.fromNamespaceAndPath(TravelYourEarth.MODID, "textures/gui/container/beacon.png");
 
     @Unique
     private static final int PAGE_TICKS = 100; // 5 seconds per page
@@ -56,6 +64,7 @@ public abstract class BeaconScreenMixin {
     // 1. Timer that changes the page every 5 seconds
     @Inject(method = "containerTick", at = @At("HEAD"))
     private void travelyourearth$onContainerTick(CallbackInfo ci) {
+        if (!Config.ENHANCED_BEACON.get()) return;
         this.travelyourearth$timer++;
 
         if (this.travelyourearth$timer >= PAGE_TICKS) {
@@ -70,6 +79,9 @@ public abstract class BeaconScreenMixin {
     // 2. Replaces the background, darkens the outer screen and cancels the original drawing
     @Inject(method = "extractBackground", at = @At("HEAD"), cancellable = true)
     private void travelyourearth$overrideBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
+        // "Enhanced beacon" off: let vanilla draw its normal background
+        if (!Config.ENHANCED_BEACON.get()) return;
+
         BeaconScreen screen = (BeaconScreen) (Object) this;
 
         // Cancel right away so Minecraft does NOT run its default drawing

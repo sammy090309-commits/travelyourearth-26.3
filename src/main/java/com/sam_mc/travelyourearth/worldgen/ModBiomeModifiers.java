@@ -22,6 +22,7 @@ public class ModBiomeModifiers {
     public static final ResourceKey<BiomeModifier> ADD_RUBY_ORE = registerKey("add_ruby_ore");
     public static final ResourceKey<BiomeModifier> ADD_MOUNTAIN_RUBY_ORE = registerKey("add_mountain_ruby_ore");
     public static final ResourceKey<BiomeModifier> ADD_DAPPLED_RUBY_ORE = registerKey("add_dappled_ruby_ore");
+    public static final ResourceKey<BiomeModifier> ADD_SAVANNA_RUBY_ORE = registerKey("add_savanna_ruby_ore");
 
     public static void bootstrap(BootstrapContext<BiomeModifier> context) {
         var placedFeatures = context.lookup(Registries.PLACED_FEATURE);
@@ -56,6 +57,18 @@ public class ModBiomeModifiers {
         context.register(ADD_DAPPLED_RUBY_ORE, new BiomeModifiers.AddFeaturesBiomeModifier(
                 HolderSet.direct(biomes.getOrThrow(Biomes.DAPPLED_FOREST)),
                 HolderSet.direct(placedFeatures.getOrThrow(ModPlacedFeatures.DAPPLED_RUBY_ORE_PLACED_KEY)),
+                GenerationStep.Decoration.UNDERGROUND_ORES
+        ));
+
+        // 4. ALL 3 SAVANNAS: "the country of the ruby" (savanna villages trade with rubies).
+        //    Their own layer: 25 attempts, size 3, Y 0 to 192 (see ModPlacedFeatures).
+        context.register(ADD_SAVANNA_RUBY_ORE, new BiomeModifiers.AddFeaturesBiomeModifier(
+                HolderSet.direct(
+                        biomes.getOrThrow(Biomes.SAVANNA),
+                        biomes.getOrThrow(Biomes.SAVANNA_PLATEAU),
+                        biomes.getOrThrow(Biomes.WINDSWEPT_SAVANNA)
+                ),
+                HolderSet.direct(placedFeatures.getOrThrow(ModPlacedFeatures.SAVANNA_RUBY_ORE_PLACED_KEY)),
                 GenerationStep.Decoration.UNDERGROUND_ORES
         ));
     }

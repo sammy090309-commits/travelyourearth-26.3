@@ -1,6 +1,7 @@
 package com.sam_mc.travelyourearth.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.sam_mc.travelyourearth.Config;
 import com.sam_mc.travelyourearth.TravelYourEarth;
 import com.sam_mc.travelyourearth.mixin.AbstractContainerScreenAccessorMixin;
 import net.minecraft.client.Minecraft;
@@ -34,9 +35,11 @@ import java.util.Locale;
  * Clicking an item puts 1 of it in the payment slot (if another item was there, it is returned first).
  *
  * Textures (assets/travelyourearth/textures/gui/):
- *   beacon_payments.png                             139 x 138  (panel)
+ *   container/beacon_payments.png                   139 x 138  (panel)
  *   sprites/beacon/payments_button.png               16 x 16   (book)
  *   sprites/beacon/payments_button_highlighted.png   16 x 16   (book while hovered)
+ *
+ * Can be turned off with "Enhanced beacon" (Config -> Client): then the beacon is 100% vanilla.
  */
 @EventBusSubscriber(modid = TravelYourEarth.MODID, value = Dist.CLIENT)
 public class BeaconPaymentPanel {
@@ -65,7 +68,7 @@ public class BeaconPaymentPanel {
     private static final int SHIFT = (PANEL_W + GAP) / 2;        // how far the beacon moves when opened (like the crafting table)
 
     // ---- Textures ----
-    private static final Identifier PANEL_TEXTURE = id("textures/gui/beacon_payments.png");
+    private static final Identifier PANEL_TEXTURE = id("textures/gui/container/beacon_payments.png");
     // Vanilla recipe book cells (25x25)
     private static final Identifier SLOT_CRAFTABLE = Identifier.withDefaultNamespace("recipe_book/slot_craftable");
     private static final Identifier SLOT_UNCRAFTABLE = Identifier.withDefaultNamespace("recipe_book/slot_uncraftable");
@@ -100,6 +103,13 @@ public class BeaconPaymentPanel {
     @SubscribeEvent
     public static void onInit(ScreenEvent.Init.Post event) {
         if (!(event.getScreen() instanceof BeaconScreen screen)) return;
+        if (!enabled()) {
+            // Turned off: no book, no panel. Forget the old widgets so nothing reacts to them.
+            background = null;
+            searchBox = null;
+            CELLS.clear();
+            return;
+        }
 
         // Like the recipe book: if the panel fits on the left, opening it moves the beacon
         // SHIFT px to the right so that panel + beacon stay centered.
@@ -157,7 +167,7 @@ public class BeaconPaymentPanel {
     /** Mouse wheel over the panel = scroll. */
     @SubscribeEvent
     public static void onScroll(ScreenEvent.MouseScrolled.Pre event) {
-        if (!(event.getScreen() instanceof BeaconScreen) || !open) return;
+        if (!(event.getScreen() instanceof BeaconScreen) || !open || !enabled()) return;
         if (!isOverPanel(event.getMouseX(), event.getMouseY())) return;
 
         int maxRow = Math.max(0, (filtered.size() + COLUMNS - 1) / COLUMNS - ROWS);
@@ -168,7 +178,7 @@ public class BeaconPaymentPanel {
     /** While typing in the search box, keys (like E) don't close the beacon. */
     @SubscribeEvent
     public static void onKey(ScreenEvent.KeyPressed.Pre event) {
-        if (!(event.getScreen() instanceof BeaconScreen)) return;
+        if (!(event.getScreen() instanceof BeaconScreen) || !enabled()) return;
         if (searchBox == null || !searchBox.isFocused() || !searchBox.visible) return;
         if (event.getKey() == InputConstants.KEY_ESCAPE) return; // ESC still closes it
 
@@ -184,6 +194,11 @@ public class BeaconPaymentPanel {
      * Moves the beacon dx pixels: its position (leftPos) and every button on the screen
      * (powers, confirm, cancel, and ours too if they already exist).
      */
+    /** "Enhanced beacon" option (Config -> Client). */
+    private static boolean enabled() {
+        return Config.ENHANCED_BEACON.get();
+    }
+
     private static void shiftScreen(BeaconScreen screen, int dx) {
         AbstractContainerScreenAccessorMixin accessor = (AbstractContainerScreenAccessorMixin) screen;
         accessor.travelyourearth$setLeftPos(accessor.travelyourearth$getLeftPos() + dx);

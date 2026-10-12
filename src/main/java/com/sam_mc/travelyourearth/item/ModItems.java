@@ -1,7 +1,12 @@
 package com.sam_mc.travelyourearth.item;
 
 import com.sam_mc.travelyourearth.TravelYourEarth;
+import com.sam_mc.travelyourearth.tags.ModTags;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.MapItem;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.component.MapDecorations;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -67,6 +72,35 @@ public class ModItems {
             properties -> new Item(properties.horseArmor(ModArmorMaterials.RUBY_ARMOR_MATERIAL)));
     public static final DeferredItem<Item> RUBY_NAUTILUS_ARMOR = ITEMS.registerItem("ruby_nautilus_armor",
             properties -> new Item(properties.nautilusArmor(ModArmorMaterials.RUBY_ARMOR_MATERIAL)));
+
+    // =========================================================================
+    // Maps (1.2)
+    // =========================================================================
+
+    /**
+     * Trail Ruins explorer map, sold by the illegal cartographer.
+     * Registered like vanilla 26.3 explorer maps (MapItem + empty MAP_DECORATIONS).
+     * "buried_" like vanilla's buried_trial_chambers_map / buried_ancient_city_map:
+     * the trail ruins are underground.
+     * Not in #minecraft:extendable_maps -> can't be zoomed out with paper (like vanilla explorer maps).
+     */
+    public static final DeferredItem<Item> BURIED_TRAIL_RUINS_MAP = ITEMS.registerItem("buried_trail_ruins_map",
+            properties -> new MapItem(properties.component(DataComponents.MAP_DECORATIONS, MapDecorations.EMPTY)));
+
+    // =========================================================================
+    // Banner patterns (1.2)
+    // =========================================================================
+
+    /**
+     * Rebellion Banner Pattern: put it in the loom to stamp the crossed axe + hoe + star.
+     * Same as vanilla flow/guster patterns (stack of 1, rare). Sold by the illegal shepherd.
+     */
+    public static final DeferredItem<Item> REBELLION_BANNER_PATTERN = ITEMS.registerItem("rebellion_banner_pattern",
+            properties -> new Item(properties.stacksTo(1).rarity(Rarity.RARE)
+                    // 26.3: delayedComponent, like vanilla flow/guster. The patterns are data that loads
+                    // AFTER the items, so the tag is looked up later through the context.
+                    .delayedComponent(DataComponents.PROVIDES_BANNER_PATTERNS,
+                            context -> context.getOrThrow(ModTags.BannerPatterns.PATTERN_ITEM_REBELLION))));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
