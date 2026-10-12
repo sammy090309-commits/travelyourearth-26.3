@@ -1,0 +1,11 @@
+{
+  "type": "travelyourearth:spawn_mobs",
+  "chance": 0.05,
+  "condition": {
+    "type": "neoforge:loot_table_id",
+    "loot_table_id": "minecraft:pots/trial_chambers/corridor"
+  },
+  "entity": "minecraft:bat",
+  "max": 3,
+  "min": 1
+}

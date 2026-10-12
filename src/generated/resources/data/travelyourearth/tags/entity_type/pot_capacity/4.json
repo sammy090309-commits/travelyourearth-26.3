@@ -1,0 +1,22 @@
+{
+  "values": [
+    "minecraft:chicken",
+    "minecraft:rabbit",
+    "minecraft:fox",
+    "minecraft:cat",
+    "minecraft:ocelot",
+    "minecraft:parrot",
+    "minecraft:frog",
+    "minecraft:axolotl",
+    "minecraft:armadillo",
+    "minecraft:turtle",
+    "minecraft:squid",
+    "minecraft:glow_squid",
+    "minecraft:cave_spider",
+    "minecraft:slime",
+    "minecraft:magma_cube",
+    "minecraft:villager",
+    "minecraft:copper_golem",
+    "minecraft:sulfur_cube"
+  ]
+}

@@ -6,6 +6,7 @@ import com.sam_mc.travelyourearth.enchantment.ModEnchantments;
 import com.sam_mc.travelyourearth.worldgen.ModBiomeModifiers;
 import com.sam_mc.travelyourearth.worldgen.ModConfiguredFeatures;
 import com.sam_mc.travelyourearth.worldgen.ModPlacedFeatures;
+import com.sam_mc.travelyourearth.worldgen.ModTrialChambers;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -40,6 +41,11 @@ public class TravelYourEarthDataGen {
                 .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, ModBiomeModifiers::bootstrap)
                 .add(Registries.ENCHANTMENT, ModEnchantments::bootstrap)         // enchantments (1.2)
                 .add(Registries.BANNER_PATTERN, ModBannerPatterns::bootstrap)    // banner patterns (1.2)
+                // Parched trial spawner (1.2.1): configs -> processors -> pools
+                // (the minecraft:trial_chambers structure is written by ModTrialChambersStructureProvider)
+                .add(Registries.TRIAL_SPAWNER_CONFIG, ModTrialChambers::bootstrapSpawnerConfigs)
+                .add(Registries.PROCESSOR_LIST, ModTrialChambers::bootstrapProcessors)
+                .add(Registries.TEMPLATE_POOL, ModTrialChambers::bootstrapPools)
                 .add(Registries.LOOT_TABLE, new LootTableProvider(
                         Set.of(),
                         List.of(
@@ -69,6 +75,7 @@ public class TravelYourEarthDataGen {
         generator.addProvider(true, new ModBannerPatternTagsProvider(packOutput, lookupProvider)); // banner pattern tags (1.2)
         generator.addProvider(true, new ModEquipmentAssetProvider(packOutput));
         generator.addProvider(true, new ModGlobalLootModifierProvider(packOutput, lookupProvider));
+        generator.addProvider(true, new ModTrialChambersStructureProvider(packOutput, lookupProvider)); // trial chambers + parched (1.2.1)
         generator.addProvider(true, new ModSoundDefinitionsProvider(packOutput)); // sounds.json
         generator.addProvider(true, new ModParticleDescriptionProvider(packOutput)); // particles/*.json (golden_spark)
     }

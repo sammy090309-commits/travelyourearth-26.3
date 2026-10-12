@@ -89,6 +89,18 @@ public class ModAttachments {
                     .build()
     );
 
+    /**
+     * Decorated pots (1.2.1): the mobs stored inside, as their spawn egg (with the count = how many).
+     * Kept APART from the pot's normal item, so hoppers can't take them out: they only come out
+     * (alive) when the pot breaks. Saved in the world, not synced (the client doesn't need it).
+     */
+    public static final Supplier<AttachmentType<net.minecraft.world.item.ItemStack>> POT_MOBS = ATTACHMENT_TYPES.register(
+            "pot_mobs",
+            () -> AttachmentType.builder(() -> net.minecraft.world.item.ItemStack.EMPTY)
+                    .serialize(net.minecraft.world.item.ItemStack.OPTIONAL_CODEC.fieldOf("mobs"))
+                    .build()
+    );
+
     public static void register(IEventBus eventBus) {
         ATTACHMENT_TYPES.register(eventBus);
     }

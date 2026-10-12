@@ -1,0 +1,21 @@
+{
+  "values": [
+    "minecraft:ravager",
+    "minecraft:iron_golem",
+    "minecraft:snow_golem",
+    "minecraft:warden",
+    "minecraft:elder_guardian",
+    "minecraft:shulker",
+    "minecraft:horse",
+    "minecraft:donkey",
+    "minecraft:mule",
+    "minecraft:skeleton_horse",
+    "minecraft:zombie_horse",
+    "minecraft:camel",
+    "minecraft:camel_husk",
+    "minecraft:sniffer",
+    "minecraft:ghast",
+    "minecraft:happy_ghast",
+    "minecraft:giant"
+  ]
+}

@@ -91,6 +91,16 @@ public class ModTags {
          */
         public static final TagKey<EntityType<?>> SENSITIVE_TO_BANISHMENT = createTag("sensitive_to_banishment");
 
+        // ---- Mobs in decorated pots (1.2.1) ----
+        // How many mobs of each type fit in one pot (creative: sneak + spawn egg on a pot).
+        // Not in any tag = 1. In more than one tag = the LOWEST number wins.
+        public static final TagKey<EntityType<?>> POT_CAPACITY_8 = createTag("pot_capacity/8");
+        public static final TagKey<EntityType<?>> POT_CAPACITY_4 = createTag("pot_capacity/4");
+        public static final TagKey<EntityType<?>> POT_CAPACITY_2 = createTag("pot_capacity/2");
+        public static final TagKey<EntityType<?>> POT_CAPACITY_1 = createTag("pot_capacity/1");
+        /** Mobs that can never go into a pot (Wither, Ender Dragon...). */
+        public static final TagKey<EntityType<?>> CANNOT_ENTER_POT = createTag("cannot_enter_pot");
+
         private static TagKey<EntityType<?>> createTag(String name) {
             return TagKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(TravelYourEarth.MODID, name));
         }

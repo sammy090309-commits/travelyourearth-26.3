@@ -5,11 +5,13 @@ import com.sam_mc.travelyourearth.item.ModItems;
 import com.sam_mc.travelyourearth.loot.ReplaceWithItemLootModifier;
 import com.sam_mc.travelyourearth.loot.RubyTrialGearLootModifier;
 import com.sam_mc.travelyourearth.loot.SavannaVillageChestModifier;
+import com.sam_mc.travelyourearth.loot.SpawnMobsLootModifier;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
@@ -28,6 +30,7 @@ import java.util.concurrent.CompletableFuture;
  *   4.   Archaeology                         -> replaces the item of the suspicious block
  *   5.   Equipment                           -> ruby gear for ominous trial chamber mobs
  *   6.   Savanna village chests              -> diamond -> ruby, extra rubies, ruby gear (rarer than iron)
+ *   7.   Trial chamber pots                  -> sometimes bats / silverfish jump out (1.2.1)
  */
 public class ModGlobalLootModifierProvider extends GlobalLootModifierProvider {
 
@@ -107,6 +110,16 @@ public class ModGlobalLootModifierProvider extends GlobalLootModifierProvider {
                     SAVANNA_RUBY_CHANCE,
                     SAVANNA_GEAR_CHANCE));
         }
+
+        // =====================================================================
+        // 7. TRIAL CHAMBER POTS (1.2.1): sometimes bats or silverfish jump out
+        // =====================================================================
+        // The pot loot is rolled when the pot breaks, so the mobs come out of the broken pot.
+        // Two independent rolls; the normal loot of the pot stays the same.
+        this.add("pots/trial_chambers_bats", new SpawnMobsLootModifier(
+                condition("pots/trial_chambers/corridor"), 1000, EntityTypes.BAT, 0.05F, 1, 3));        // 5%: 1-3 bats
+        this.add("pots/trial_chambers_silverfish", new SpawnMobsLootModifier(
+                condition("pots/trial_chambers/corridor"), 1000, EntityTypes.SILVERFISH, 0.03F, 1, 3)); // 3%: 1-3 silverfish
     }
 
     // =========================================================================

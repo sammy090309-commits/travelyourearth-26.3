@@ -7,7 +7,8 @@
     "ShowTradesToPlayerMixin",
     "VillagerMixin",
     "VillagerHostilesSensorMixin",
-    "IllegalNoHeroMixin"
+    "IllegalNoHeroMixin",
+    "DecoratedPotRemovalMixin"
   ],
   "client": [
     "BeaconScreenMixin",

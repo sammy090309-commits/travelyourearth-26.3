@@ -31,6 +31,10 @@ public class ModLootModifiers {
     public static final Supplier<MapCodec<? extends IGlobalLootModifier>> SAVANNA_VILLAGE_CHEST =
             LOOT_MODIFIERS.register("savanna_village_chest", () -> SavannaVillageChestModifier.CODEC);
 
+    /** travelyourearth:spawn_mobs -> bats / silverfish out of trial chamber pots (SpawnMobsLootModifier, 1.2.1) */
+    public static final Supplier<MapCodec<? extends IGlobalLootModifier>> SPAWN_MOBS =
+            LOOT_MODIFIERS.register("spawn_mobs", () -> SpawnMobsLootModifier.CODEC);
+
     public static void register(IEventBus eventBus) {
         LOOT_MODIFIERS.register(eventBus);
     }

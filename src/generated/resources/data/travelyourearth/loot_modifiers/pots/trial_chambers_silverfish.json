@@ -1,0 +1,11 @@
+{
+  "type": "travelyourearth:spawn_mobs",
+  "chance": 0.03,
+  "condition": {
+    "type": "neoforge:loot_table_id",
+    "loot_table_id": "minecraft:pots/trial_chambers/corridor"
+  },
+  "entity": "minecraft:silverfish",
+  "max": 3,
+  "min": 1
+}
